@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="apptools-admin.ZPM">
+  <Document name="apptools-django.ZPM">
     <Module>
-      <Name>apptools-admin</Name>
-      <Version>1.1.37</Version>
-      <Description>Application tools for technical support and DBMS administrator. View and edit arrays, execute queries, including JDBC/ODBC, sending results to email as XLS files</Description>
+      <Name>apptools-django</Name>
+      <Version>1.1.38</Version>
+      <Description>Application tools for technical support and DBMS administrator use Django</Description>
       <Packaging>module</Packaging>
   <Keywords>Application tools admin</Keywords>
 <Author>
@@ -13,9 +13,9 @@
 <License>MIT</License>
 <Notes>
 repository:
-https://github.com/SergeyMi37/apptools-admin
+https://github.com/SergeyMi37/apptools-django
 description:
-Application tools for technical support and DBMS administrator. View and edit arrays, execute queries, including JDBC/ODBC, sending results to email as XLS files.
+Application tools for technical support and DBMS administrator use Django
 </Notes>
 </Author>
 	<SourcesRoot>src</SourcesRoot>
