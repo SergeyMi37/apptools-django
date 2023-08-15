@@ -18,34 +18,30 @@
 
 [![license](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## A platform for creating applications for administration and tools for technical support and a database administrator.
-
-Viewing and editing global arrays, executing queries, including JDBC / ODBC, generating results in XLS, XLSX, JSON formats, sending results by e-mail in the form of XLS files. Execution of queries and IRIS commands in the interface for any namespace. Summary analysis and error viewing for all namespaces.
-
 ## What's new
 
-Added suppurt Django framework.
+Added support Django framework.
 
 ![](https://raw.githubusercontent.com/SergeyMi37/apptools-admin/master/doc/Screenshot_10-at.png)
 
-## Applications based on this platform
-
 ## Installation DJANGO
-
+```
 git clone https://github.com/SergeyMi37/apptools-django.git
 cd apptools-django
-
+```
 Create virtual environment (optional)
-
+```
 python3 -m venv venv_dj
 source venv_dj/bin/activate 
-# for Win source venv_dj/Scripts/activate
+```
+ For Windows `source venv_dj/Scripts/activate`
 
 Install all requirements:
-
+```
 pip install -r requirements.txt
+```
 Create .env file in root directory and copy-paste this or just run cp .env_example .env, don't forget to change telegram token:
-
+```
 DJANGO_DEBUG=True
 DATABASE_URL=sqlite:///db.sqlite3
 TELEGRAM_TOKEN=<PASTE YOUR TELEGRAM TOKEN HERE>
@@ -53,21 +49,23 @@ ISC_Username=_system
 ISC_Password=SYS
 ISC_Namespace=USER
 DJANGO_SUPERUSER_PASSWORD=demo
-
+```
 Run migrations to setup SQLite database:
-
+```
 python manage.py migrate
+```
 Create superuser to get access to admin panel:
-
+```
 python manage.py createsuperuser --noinput --username admin --email admin@localhost.com
-
+```
 Run bot in polling mode:
-
-python run_polling.py 
-If you want to open Django admin panel which will be located on http://localhost:8000/tgadmin/:
-
+```
+python run_polling.py
+```
+If you want to open Django admin panel which will be located on `http://localhost:8000/tgadmin/`
+```
 python manage.py runserver
-
+```
 ## Installation with ZPM
 
 If the current ZPM instance is not installed, then in one line you can install the latest version of ZPM even with a proxy.
