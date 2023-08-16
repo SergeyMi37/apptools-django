@@ -9,7 +9,7 @@ from dtb.settings import DEBUG
 from tgbot.dispatcher import dispatcher
 from tgbot.main import bot
 
-from apptools.app import getmet
+from apptools.iris import runmet
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def process_telegram_event(update_json):
 
 
 def index(request):
-    return JsonResponse({"error": "sup "+str(getmet("apptools.core.telebot", "TS", ""))+" hacker"})
+    return JsonResponse({"error": "sup "+str(runmet("apptools.core.telebot", "TS", ""))+" hacker"})
     #return JsonResponse({"error": "sup --- hacker"})
 
 class TelegramBotWebhookView(View):
