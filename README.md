@@ -16,7 +16,7 @@
 
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SergeyMi37/apptools-django">
 
-[![license](https://img.shields.io/badge/License-Apache-yellow.svg)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/LICENSE)
+[![license](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/LICENSE)
 
 ## What's new
 
