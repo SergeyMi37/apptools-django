@@ -9,13 +9,7 @@ from dtb.settings import DEBUG
 from tgbot.dispatcher import dispatcher
 from tgbot.main import bot
 
-import irisnative
-
-##connection = irisnative.createConnection("172.16.253.242", 51663, "USER","superuser","SYS",logfile='logdocker.log')
-#iris_native = irisnative.createIris(connection)
-#appiris = irisnative.createIris(connection)
-#print(myIris.get("Test"))
-
+from apptools.app import getmet
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +21,8 @@ def process_telegram_event(update_json):
 
 
 def index(request):
-    #return JsonResponse({"error": "sup "+str(appiris.classMethodValue("apptools.core.telebot", "TS", ""))+" hacker"})
-    #return JsonResponse({"error": "sup "+str(appiris.get("Test"))+" hacker"})
-    return JsonResponse({"error": "sup --- hacker"})
-
+    return JsonResponse({"error": "sup "+str(getmet("apptools.core.telebot", "TS", ""))+" hacker"})
+    #return JsonResponse({"error": "sup --- hacker"})
 
 class TelegramBotWebhookView(View):
     # WARNING: if fail - Telegram webhook will be delivered again.
