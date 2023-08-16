@@ -1,11 +1,11 @@
-[![Repo-GitHub](https://img.shields.io/badge/dynamic/xml?color=gold&label=GitHub%20module.xml&prefix=ver.&query=%2F%2FVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsergeymi37%2Fapptools-admin%2Fmaster%2Fmodule.xml)](https://raw.githubusercontent.com/sergeymi37/apptools-admin/master/module.xml)
-[![OEX-zapm](https://img.shields.io/badge/dynamic/json?url=https:%2F%2Fpm.community.intersystems.com%2Fpackages%2Fapptools-admin%2F&label=ZPM-pm.community.intersystems.com&query=$.version&color=green&prefix=apptools-admin)](https://pm.community.intersystems.com/packages/apptools-admin)
+[![Repo-GitHub](https://img.shields.io/badge/dynamic/xml?color=gold&label=GitHub%20module.xml&prefix=ver.&query=%2F%2FVersion&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsergeymi37%2Fapptools-django%2Fmaster%2Fmodule.xml)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/module.xml)
+[![OEX-zapm](https://img.shields.io/badge/dynamic/json?url=https:%2F%2Fpm.community.intersystems.com%2Fpackages%2Fapptools-django%2F&label=ZPM-pm.community.intersystems.com&query=$.version&color=green&prefix=apptools-django)](https://pm.community.intersystems.com/packages/apptools-django)
 
-[![Docker-ports](https://img.shields.io/badge/dynamic/yaml?color=blue&label=docker-compose&prefix=ports%20-%20&query=%24.services.iris.ports&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsergeymi37%2Fapptools-admin%2Fmaster%2Fdocker-compose.yml)](https://raw.githubusercontent.com/sergeymi37/apptools-admin/master/docker-compose.yml)
+[![Docker-ports](https://img.shields.io/badge/dynamic/yaml?color=blue&label=docker-compose&prefix=ports%20-%20&query=%24.services.iris.ports&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsergeymi37%2Fapptools-django%2Fmaster%2Fdocker-compose.yml)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/docker-compose.yml)
 
 ## apptools-django
-[![OEX](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/apptools-admin) 
-[![Demo](https://img.shields.io/badge/Demo%20on-Cloud%20Run%20Deploy-F4A460)](https://appadmin.demo.community.intersystems.com/apptoolsrest/a/info)
+[![OEX](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/apptools-django) 
+[![Demo](https://img.shields.io/badge/Demo%20on-Cloud%20Run%20Deploy-F4A460)](https://apptools-django.demo.community.intersystems.com/apptoolsrest/a/info)
 
 [![Habr](https://img.shields.io/badge/Available%20article%20on-Intersystems%20Community-orange)](https://community.intersystems.com/post/intersystems-solution-technical-support-and-dbms-interoperability-administration)
 [![Habr](https://img.shields.io/badge/Есть%20статья%20на-Хабре-blue)](https://habr.com/en/post/436042/)
@@ -14,15 +14,15 @@
 [![](https://img.shields.io/badge/InterSystems-Caché-blue.svg)](https://www.intersystems.com/products/cache/)
 [![](https://img.shields.io/badge/InterSystems-Ensemble-blue.svg)](https://www.intersystems.com/products/ensemble/)
 
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SergeyMi37/apptools-admin">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SergeyMi37/apptools-django">
 
-[![license](https://img.shields.io/badge/License-Apache-yellow.svg)](https://opensource.org/licenses/Apache)
+[![license](https://img.shields.io/badge/License-Apache-yellow.svg)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/LICENSE)
 
 ## What's new
 
 Added support Django framework.
 
-![](https://raw.githubusercontent.com/SergeyMi37/apptools-admin/master/doc/Screenshot_10-at.png)
+![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_10-at.png)
 
 ## Installation DJANGO
 ```
@@ -74,7 +74,7 @@ s r=##class(%Net.HttpRequest).%New(),proxy=$System.Util.GetEnviron("https_proxy"
 ```
 If ZPM is installed, then ZAPM can be set with the command
 ```
-zpm:USER>install apptools-admin
+zpm:USER>install apptools-django
 ```
 ## Installation with Docker
 
@@ -85,7 +85,7 @@ Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installi
 Clone/git pull the repo into any local directory
 
 ```
-$ git clone https://github.com/SergeyMi37/apptools-admin.git
+$ git clone https://github.com/SergeyMi37/apptools-django.git
 ```
 
 Open the terminal in this directory and run:
@@ -107,5 +107,5 @@ Open IRIS terminal:
 $ docker-compose exec iris iris session iris
 USER>
 USER>zpm
-zpm:USER>install apptools-admin
+zpm:USER>install apptools-django
 ```
