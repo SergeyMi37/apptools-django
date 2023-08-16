@@ -12,7 +12,7 @@ ISC_Username = os.getenv("ISC_Username")
 ISC_Password = os.getenv("ISC_Password")
 ISC_Namespace = os.getenv("ISC_Namespace")
 
-def runmet(_class,_method, _arg):
+def classMethod(_class,_method, _arg):
     try:
         connection = irisnative.createConnection(ISC_Host, int(ISC_Port), ISC_Namespace, ISC_Username, ISC_Password)
         iris_native = irisnative.createIris(connection)
