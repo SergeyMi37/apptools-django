@@ -24,7 +24,7 @@ def index(request):
     return JsonResponse({"ok": "wellcome"})
 
 def irisinfo(request):
-    return JsonResponse({"iris-info": " "+str(classMethod("apptools.core.telebot", "TS", "Info"))+" "})
+    return JsonResponse({"iris_info": " "+str(classMethod("apptools.core.telebot", "TS", "Info"))+" "})
     #return JsonResponse({"error": "sup --- hacker"})
 
 class TelegramBotWebhookView(View):
