@@ -3,7 +3,7 @@
   <Document name="apptools-django.ZPM">
     <Module>
       <Name>apptools-django</Name>
-      <Version>1.1.38</Version>
+      <Version>1.2.0</Version>
       <Description>Application tools for technical support and DBMS administrator use Django</Description>
       <Packaging>module</Packaging>
   <Keywords>Application tools admin</Keywords>

@@ -148,6 +148,7 @@ ClassMethod NSpaceFirstHead(Par = "") As %Status
 	set key=Par("key")
 	set divId=Par("divId")
 	set %ui=1
+	if '$$EXIST^%R("%ZAPM.ext.zpm.1") write $$$appError("<a target=_blank href='https://github.com/SergeyMi37/zapm'>zapm</a> project is not installed in the current instance") quit $$$OK
 	set ns=$p(key,"NS",2,*)
 	if $e(ns,1)="-" set ns="%"_$e(ns,2,*)
 	set GN=##class(apptools.lte.zapm).#GNStore
