@@ -7,20 +7,14 @@
 [![OEX](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/apptools-django) 
 [![Demo](https://img.shields.io/badge/Demo%20on-Cloud%20Run%20Deploy-F4A460)](https://apptools-django.demo.community.intersystems.com/apptoolsrest/a/info)
 
-[![Habr](https://img.shields.io/badge/Available%20article%20on-Intersystems%20Community-orange)](https://community.intersystems.com/post/intersystems-solution-technical-support-and-dbms-interoperability-administration)
-[![Habr](https://img.shields.io/badge/Есть%20статья%20на-Хабре-blue)](https://habr.com/en/post/436042/)
-
-[![](https://img.shields.io/badge/InterSystems-IRIS-blue.svg)](https://www.intersystems.com/products/intersystems-iris/)
-[![](https://img.shields.io/badge/InterSystems-Caché-blue.svg)](https://www.intersystems.com/products/cache/)
-[![](https://img.shields.io/badge/InterSystems-Ensemble-blue.svg)](https://www.intersystems.com/products/ensemble/)
-
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/SergeyMi37/apptools-django">
 
 [![license](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/LICENSE)
 
 ## What's new
 
-Added support Django framework.
+Apptools-admin included Django framework support.
+The project is based on a template and inspired by applications from Dmitry and Oleksandr.
 
 ![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_10-at.png)
 
@@ -31,8 +25,10 @@ cd apptools-django
 ```
 Create virtual environment (optional)
 ```
-python3 -m venv venv_dj
-source venv_dj/bin/activate 
+python3 -m venv dtb_venv
+source dtb_venv/bin/activate 
+# deactivate
+# source dtb_venv/Scripts/activate # for Windows
 ```
  For Windows `source venv_dj/Scripts/activate`
 
@@ -52,11 +48,12 @@ DJANGO_SUPERUSER_PASSWORD=demo
 ```
 Run migrations to setup SQLite database:
 ```
+python manage.py makemigrations
 python manage.py migrate
 ```
 Create superuser to get access to admin panel:
 ```
-python manage.py createsuperuser --noinput --username admin --email admin@localhost.com
+python manage.py createsuperuser --noinput --username adm --email adm@localhost.com # .env DJANGO_SUPERUSER_PASSWORD=demo
 ```
 Run bot in polling mode:
 ```
@@ -78,7 +75,6 @@ zpm:USER>install apptools-django
 ```
 ## Installation with Docker
 
-## Prerequisites
 Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
 
 ## Installation 

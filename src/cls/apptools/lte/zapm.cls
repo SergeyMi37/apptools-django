@@ -136,8 +136,7 @@ ClassMethod GetAllApps(opt) As %Status
 	s opt(key,"ClassName")=..%ClassName(1)
 	s opt(key,"Method")="ShowTabSearch"
 	s opt(key,"TabMenu","Mode")=0 ;1 - for each new search bar to make new tab, 0-tab is always the same
-	do ..GetAppsOpenWinPanel(.opt,"menu-top-zapm", "/apptoolsrest/a/zapm", "zapm", $lb(LeftMenuNumer,LeftMenuName))
-	do ..GetAppsOpenWinPanel(.opt,"menu-top-zinfo", "/apptoolsrest/a/info", "info", $lb(LeftMenuNumer,LeftMenuName))
+	do ##class(apptools.lte.info).GetTopMenuFavorites(.opt,$lb(LeftMenuNumer,LeftMenuName))
 	
 	do ..CheckRoleMenu(.opt)
 	quit $$$OK
@@ -546,7 +545,7 @@ ClassMethod init(installall = 0) As %Status
 	quit $$$OK
 }
 
-/// write ##class(appmsw.python.util).IsInstallzpm("exchange-rate-cbrf")
+/// write ##class(apptools.lte.zapm).IsInstallzpm("zpipe")
 ClassMethod IsInstallzpm(modulename, ns = {$namespace}) As %String
 {
 	do ##class(%ZPM.PackageManager).GetListModule(ns,.list)

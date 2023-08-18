@@ -13,7 +13,6 @@ from apptools.iris import classMethod
 
 logger = logging.getLogger(__name__)
 
-
 @app.task(ignore_result=True)
 def process_telegram_event(update_json):
     update = Update.de_json(update_json, bot)
