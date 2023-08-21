@@ -41,9 +41,6 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    expose:
-      - "8000"
-    #network_mode: "host"
     env_file:
       - ./.env
     depends_on:

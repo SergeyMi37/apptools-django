@@ -64,7 +64,7 @@ jobs:
           --cluster ${CLUSTER_NAME}    \
           --cluster-location ${REGION} \
           --namespace ${NAMESPACE}     \
-          --port 8000                  \
+          --port 52773                 \
           --min-instances 1            \
           --memory 512Mi               \
           --timeout 300                \
