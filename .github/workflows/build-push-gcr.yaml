@@ -12,6 +12,5 @@ jobs:
     uses: intersystems-community/demo-deployment/.github/workflows/deployment.yml@master
     with:
       name: apptools-django
-      port: 8000
     secrets:
       SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
