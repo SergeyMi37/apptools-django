@@ -16,6 +16,9 @@ python manage.py createsuperuser --noinput --username adm --email adm@localhost.
 # python run_polling.py
 python manage.py runserver
 
+python -m venv dtb_venv && source dtb_venv/Scripts/activate && pip install -r requirements.txt
+python manage.py makemigrations && python manage.py migrate && python manage.py runserver 8081
+
 ## docker ------------------------------------------------------------------
 ### stoped and clean all containers
 docker stop $(docker ps -a -q) &&  docker rm $(docker ps -a -q) && docker system prune -f
