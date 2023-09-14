@@ -10,7 +10,7 @@ wget --continue https://github.com/intersystems-community/iris-driver-distributi
 
 # pip install apptools/api/intersystems_irispython-3.2.0-py3-none-any.whl
 python -m pip install --upgrade pip
-python manage.py makemigrations <name>
+python manage.py makemigrations #<name>
 python manage.py migrate
 python manage.py createsuperuser --noinput --username adm --email adm@localhost.com
 # python run_polling.py
@@ -18,6 +18,23 @@ python manage.py runserver
 
 python -m venv dtb_venv && source dtb_venv/Scripts/activate && pip install -r requirements.txt
 python manage.py makemigrations && python manage.py migrate && python manage.py runserver 8081
+
+# https://the-bosha.ru/2016/06/29/django-delaem-damp-bazy-dannykh-i-vosstanavlivaem-iz-nego-s-dumpdata-i-loaddata/
+# https://realpython.com/django-pytest-fixtures/#fixtures-in-django
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > db-all.json
+python manage.py loaddata db-all.json
+python manage.py dumpdata --exclude auth.permission --exclude auth.user --exclude contenttypes --exclude users.user --exclude admin.logentry --exclude sessions.session --indent 2 > db-test.json
+
+# https://vivazzi.pro/ru/it/translate-django/
+# https://egorovegor.ru/django-multiple-language-support/
+mkdir locale
+django-admin makemessages -l ru -i dtb_venv -i src
+django-admin makemessages -l en -i dtb_venv -i src
+django-admin makemessages -a -i dtb_venv -i src # update
+django-admin compilemessages -i dtb_venv -i src
+
+# 
+pip freeze > requirements.txt
 
 ## docker ------------------------------------------------------------------
 ### stoped and clean all containers
@@ -45,7 +62,9 @@ docker-compose exec iris iris session iris -U IRISAPP
 ## git ------------------------------------------------------------------
 ### commit and push
 ```
-git add * && git commit -am "upd" && git push
+git add *
+git commit -am "upd"
+git push
 ```
 ## git stored
 ```
@@ -62,6 +81,11 @@ git config --global credential.helper store
 git config --global user.name "SergeyMi37"
 git config --global user.email "Sergey.Mikhaylenko@gmail.com"
 ```
+## ---------- SQLite
+  sudo apt install sqlite3
+  sqlite3 db.sqlite3 'select * from auth_user'
+  sqlite3 db.sqlite3 'select * from MainApp.snippet'
+  sqlite3 db.sqlite3 'select * from appmsw_param'
 
 ## export IRIS Analytics artifacts
 ```
@@ -76,7 +100,10 @@ do ##class(%DeepSee.Utils).%BuildCube("CubeName")
 do $System.OBJ.Export("po*.GBL","/irisdev/app/src/gbl/globals.xml",,.errors)
 zw errors
 ```
-
+## update code apptools-django application
+```
+USER>do ##class(apptools.core.code).exp("/iris-backup/apptools/apptools-django/src/","apptools.","apptools.M")
+```
 
 ## zpm --------------------------------------------------------------------
 ## Installed zpm short one line
@@ -142,3 +169,44 @@ wsl -shutdown
 wsl --set-default Ubu20.04-mc-dock
 
 wsl --distribution Ubu20.04 --user msw
+
+# --------------------
+import sqlite3
+
+try:
+    sqlite_connection = sqlite3.connect('sqlite_python.db')
+    cursor = sqlite_connection.cursor()
+    print("База данных создана и успешно подключена к SQLite")
+
+    sqlite_select_query = "select sqlite_version();"
+    cursor.execute(sqlite_select_query)
+    record = cursor.fetchall()
+    print("Версия базы данных SQLite: ", record)
+    cursor.close()
+
+except sqlite3.Error as error:
+    print("Ошибка при подключении к sqlite", error)
+finally:
+    if (sqlite_connection):
+        sqlite_connection.close()
+        print("Соединение с SQLite закрыто")
+#----------------------
+$ python
+Python 3.10.4 (tags/v3.10.4:9d38120, Mar 23 2022, 23:13:41) [MSC v.1929 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sqlite3
+>>> con = sqlite3.connect("db.sqlite3")  
+>>> cursor=con.cursor()
+>>> cursor.execute("select sqlite_version();")
+<sqlite3.Cursor object at 0x00000232697E7CC0>
+>>> record = cursor.fetchall()
+>>> print("Версия базы данных SQLite: ", record)
+Версия базы данных SQLite:  [('3.37.2',)]
+>>> cursor.execute("select * from auth_user")
+<sqlite3.Cursor object at 0x00000232697E7CC0>
+>>> record = cursor.fetchall()
+>>> print("Пользователи", record)
+Пользователи [(1, 'pbkdf2_sha256$260000$W52iGSnSLyo813qud4Povb$EuGqGkUnaxZOgMGBWiSGl4rDu31AELyPZibfqagyUSM=', '2023-08-24 16:39:26.728000', 1, 'adm', '', 'adm@localhost.com', 1, 1, '2023-08-24 16:39:11.568000', '')]
+>>> cursor.close()
+>>> con.close()               
+>>> exit()

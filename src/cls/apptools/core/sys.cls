@@ -225,6 +225,16 @@ ClassMethod GetValue(gn, row, NameField) As %String
  quit $lg(@gn@(row),@gn@(-1,NameField))
 }
 
+/// Set one field value by its name from GN
+/// if ##class(apptools.core.sys).SetValue(gn,2,"QUANTITY","newval") zw @gn@(2)
+ClassMethod SetValue(gn, row, NameField, val) As %Status
+{
+ if $g(@gn@(-1,NameField))="" quit $$$ERROR($$$GeneralError,"undefined field: "_NameField)
+ if '$d(@gn@(row)) quit $$$ERROR($$$GeneralError,"undefined row: "_row)
+ set $list(@gn@(row),@gn@(-1,NameField))=val
+ quit $$$OK
+}
+
 /// Procedure for calling from a regular job and storing reports in the global
 /// %SYS>d ##class(apptools.core.sys).SaveQuery("SYS.Database:FreeSpace")
 /// %SYS>d ##class(apptools.core.sys).SaveQuery("%SYSTEM.License:Counts")
@@ -257,7 +267,9 @@ ClassMethod SaveQueryTab(query = "%SYSTEM.License:Counts", gn = "^||q")
 	else { Set status=rset.Execute()}
 	If $$$ISERR(status) quit status
 	Set colcnt=rset.GetColumnCount()
-	For i=1:1:colcnt set @gn@(0,i)=rset.GetColumnName(i),@gn@(-1,rset.GetColumnName(i))=i
+	set GetColumnName=""
+	For i=1:1:colcnt set @gn@(0,i)=rset.GetColumnName(i),@gn@(-1,rset.GetColumnName(i))=i,GetColumnName=GetColumnName_$lb(rset.GetColumnName(i))
+	set @gn@(0)=GetColumnName
 	while rset.Next() {	if $I(row)
 		set str=""
 	   	For i=1:1:colcnt set str=str_$lb(rset.GetData(i))
@@ -1043,6 +1055,22 @@ ClassMethod ExportSecurity(dir = "/iris-backup/install/security/") As %Status
 	zn "%SYS" 
 	$$$TOE(st, ##class(%File).CreateDirectoryChain(dir))
 	quit ##class(Security.System).ExportAll(dir_"SecurityExport"_$tr($zd($h,3)_$zt($p($h,",",2),-1),":- ")_".xml", .NumExported)
+}
+
+/// do ##class(apptools.core.sys).Run2Spool("zw ^%apptools.Setting","^gnTmp")
+ClassMethod Run2Spool(exe, Output gn, oneline = 1, count) As %Status
+{
+ OPEN 2:$job USE 2 
+ xecute exe
+ CLOSE 2
+ KILL @gn
+ set (@gn,i,count)=""
+ for { set i=$order(^SPOOL($job,i),1,s) quit:i=""
+ 	if oneline set @gn=@gn_s
+ 	else  set @gn@(i)=s
+ 	set count=count+1
+ }
+ KILL ^SPOOL($job)
 }
 
 }

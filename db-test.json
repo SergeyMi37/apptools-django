@@ -1,0 +1,87 @@
+[
+{
+  "model": "appmsw.param",
+  "pk": 24,
+  "fields": {
+    "name": "key:Sensorhome",
+    "paropt": "app",
+    "desc": "",
+    "category": "",
+    "code": "{\r\n\"TabName\":\"Sensor-Home\",\r\n\"ClassName\":\"apptools.lte.warmhome\",\r\n\"Method\":\"ShowTabSample\",\r\n\"Role\":\"%All\",\r\n\"TabMenu\":{\"Close\":1},\r\n\"aw-icon\":\"fa-solid fa-temperature-high\",\r\n\"Active\":1,\r\n\"URL\":\"http://find.serpan.site:65092/apptoolsrest/custom-task/user/run&class=apptools.core.rest&met=GetLastLogs&par=\",\r\n\"username\":\"demo\",\r\n\"password\":\"warmhome\",\r\n\"token\":\"657730-456321\"\r\n}",
+    "creation_date": "2023-08-30T11:53:15.249Z",
+    "user": 1,
+    "public": true,
+    "enabled": true
+  }
+},
+{
+  "model": "appmsw.param",
+  "pk": 25,
+  "fields": {
+    "name": "key:SensorCountry",
+    "paropt": "app",
+    "desc": "",
+    "category": "",
+    "code": "{\r\n\"TabName\":\"Sensor in Country\",\r\n\"ClassName\":\"apptools.lte.warmhome\",\r\n\"Method\":\"ShowTabSample\",\r\n\"Role\":\"%All\",\r\n\"TabMenu\":{\"Close\":1},\r\n\"aw-icon\":\"fa-temperature-high\",\r\n\"Active\":0\r\n}",
+    "creation_date": "2023-08-30T11:57:25.160Z",
+    "user": 1,
+    "public": true,
+    "enabled": true
+  }
+},
+{
+  "model": "appmsw.param",
+  "pk": 26,
+  "fields": {
+    "name": "key:SensorCountry2",
+    "paropt": "app",
+    "desc": "",
+    "category": "",
+    "code": "{\r\n\"TabName\":\"Sensor in Dacha\",\r\n\"ClassName\":\"apptools.lte.warmhome\",\r\n\"Method\":\"ShowTabSample\",\r\n\"Role\":\"%All\",\r\n\"TabMenu\":{\"Close\":1},\r\n\"aw-icon\":\"fa-temperature-high\",\r\n\"Active\":0,\r\n\"URL\":\"http://192.168.1.222:52773/apptoolsrest/custom-task/AAA/run&class=apptools.core.rest&met=GetLastLogs&par=\",\r\n\"username\":\"superuser\"\r\n}",
+    "creation_date": "2023-08-30T11:57:57.431Z",
+    "user": 1,
+    "public": true,
+    "enabled": true
+  }
+},
+{
+  "model": "appmsw.param",
+  "pk": 27,
+  "fields": {
+    "name": "key:SensorCountry3",
+    "paropt": "app",
+    "desc": "",
+    "category": "",
+    "code": "{\r\n\"TabName\":\"Sensors\",\r\n\"ClassName\":\"apptools.lte.warmhome\",\r\n\"Method\":\"ShowTabSample\",\r\n\"Role\":\"%All\",\r\n\"TabMenu\":{\"Close\":1},\r\n\"aw-icon\":\"fa-list-alt\",\r\n\"Active\":0\r\n}",
+    "creation_date": "2023-08-30T11:58:20.631Z",
+    "user": 1,
+    "public": true,
+    "enabled": true
+  }
+},
+{
+  "model": "appmsw.param",
+  "pk": 28,
+  "fields": {
+    "name": "key:CameraHome",
+    "paropt": "app",
+    "desc": "",
+    "category": "",
+    "code": "{\r\n\"TabName\":\"Camera-Home\",\r\n\"ClassName\":\"apptools.lte.warmhome\",\r\n\"Method\":\"ShowTabSample\",\r\n\"Role\":\"%All\",\r\n\"TabMenu\":{\"Close\":0},\r\n\"aw-icon\":\"fa-solid fa-video\",\r\n\"Active\":0,\r\n\"URL\":\"http://zind.serpax.site:65092/apptoolsrest/a/infochest#\",\r\n\"username\":\"superuser\",\r\n\"password\":\"SYS\",\r\n\"token\":\"321\"\r\n}",
+    "creation_date": "2023-08-30T11:58:46.007Z",
+    "user": 1,
+    "public": true,
+    "enabled": true
+  }
+},
+{
+  "model": "appmsw.comment",
+  "pk": 13,
+  "fields": {
+    "text": "test",
+    "creation_date": "2023-08-30T12:46:05.279Z",
+    "author": 1,
+    "param": 25
+  }
+}
+]

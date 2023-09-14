@@ -1,5 +1,5 @@
 import datetime
-
+import json
 from django.utils import timezone
 from telegram import ParseMode, Update
 from telegram.ext import CallbackContext
@@ -9,6 +9,7 @@ from tgbot.handlers.utils.info import extract_user_data_from_update
 from users.models import User
 from tgbot.handlers.onboarding.keyboards import make_keyboard_for_start_command
 from apptools.iris import classMethod
+from django.conf import settings
 
 def command_start(update: Update, context: CallbackContext) -> None:
     u, created = User.get_user_and_created(update, context)
@@ -30,7 +31,11 @@ def secret_level(update: Update, context: CallbackContext) -> None:
         user_count=User.objects.count(),
         active_24=User.objects.filter(updated_at__gte=timezone.now() - datetime.timedelta(hours=24)).count()
     )
-    text=text+'\n Instance: <b>'+str(classMethod("apptools.core.telebot", "TS", "Info"))+"</b>"
+    _ret=json.loads(classMethod("","apptools.core.telebot", "TS", ""))
+    _irishost=_ret["django"].get("irishost","undef")
+    #print(type(_ret),_ret)
+    text=text+f"\n Base_dir: <b> {settings.BASE_DIR}\n {_irishost}</b>"
+    
     context.bot.edit_message_text(
         text=text,
         chat_id=user_id,
