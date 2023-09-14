@@ -394,7 +394,6 @@ ClassMethod IndGetRows(gn, ByRef FieldsValue, ByRef out) As %Status
 				set FieldName=$lg(@gn@(0,FieldNumber),1)
 			}
 		}
-		;w !,gn_"---",FieldNumber,"---",FieldName,"---",data
 		MERGE:data'="" out(i)=@gn@(-4,"ind",FieldNumber,data)
 	}
 	quit st

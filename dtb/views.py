@@ -53,6 +53,18 @@ def iris_mp_list(request):
     }
     return render(request, 'pages/iris_mp_list.html', context)
 
+def iris_mp_item(request):
+    pagename=_('View Item')
+ 
+    mp_context = 'iditem='+request.GET.get('iditem')
+    _js = json.loads(classMethodPortal(request,mp_context))
+    if mp_context: pagename+= " " + str(_js["title"])
+    context = {
+        'pagename': pagename,
+        "iris_portal":_js,
+        "iris_footer":json.loads(classMethodFooter(request)),
+    }
+    return render(request, 'pages/iris_mp_item.html', context)
 
 def iris_info(request):
     return JsonResponse(json.loads(classMethod(request,"apptools.core.telebot", "TS","")))

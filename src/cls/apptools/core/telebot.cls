@@ -2,6 +2,9 @@
 Class apptools.core.telebot [ Abstract ]
 {
 
+/// Global Name Store Referens
+Parameter GN = "^%apptools.ref";
+
 /// Get base responce
 ClassMethod GetResp(arg = "") As %String
 {
@@ -85,6 +88,12 @@ ClassMethod GetPortal(arg = "", js) As %String
 		if 'js.django.authenticated quit 
 		set gn="^||tmpPortal"
 		set %Param=js.django.arg
+		if %Param["iditem=" {
+			;do ##class(apptools.core.telebot).GetPortalNS(0,gn,"Namespaces"," ")
+			set js.title=" by "_%Param
+			set js.draw="Form for "_%Param
+			quit
+		}
 		set js.proc={}
 		set js.proc.count=##class(apptools.core.telebot).GetPortalProc(1,gn)
 		set js.lock={}
@@ -119,7 +128,8 @@ ClassMethod GetPortal(arg = "", js) As %String
 			set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),"" "",,,"""")"
 			do ##class(apptools.core.sys).Run2Spool(run,gn)
 		}
-		set js.draw=$g(@gn)
+		set out=$g(@gn)
+		set js.draw=$p(out,("</table>"),1)_"</table>"
 	}
 	catch e { 
 		set js.status="error "_$ze
@@ -133,8 +143,9 @@ ClassMethod GetPortalLock(count, gn) As %String
 	new $namespace
 	set $namespace= "%SYS" 
 	do ##class(apptools.core.sys).SaveQueryTab("%SYS.LockQuery:List",gn)
-	m ^%apptools.Info(0)=@gn
-	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),"" "",,,"""")"
+	set %AppLogInfoTemp("colomn")="DelKey",%AppLogInfoTemp("method")="Locktab"
+	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),"" "",%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn,,.counts)
 	if count {
 		quit +$g(counts)
@@ -156,9 +167,39 @@ ClassMethod GetPortalProc(count, gn, SectionHeader = "Namespaces", %Param = " ")
 		;set %sql="select Pid,NameSpace, Routine, CPUTime,LinesExecuted,CurrentLineAndRoutine,GlobalReferences,LastGlobalReference, State,PidExternal,UserName,ClientIPAddress,ClientNodeName,CurrentDevice,ClientExecutableName,MemoryAllocated,MemoryUsed,	OpenDevices,CSPSessionID, InTransaction,LicenseUserId,Priority,Roles from %SYS.ProcessQuery"
 		set %sql="select Pid,NameSpace, Routine, CPUTime,LinesExecuted,CurrentLineAndRoutine,GlobalReferences, State,UserName from %SYS.ProcessQuery"
 	}
-	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,,,"""")"
+	set %AppLogInfoTemp("colomn")="Pid",%AppLogInfoTemp("method")="Process"
+	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn)
 	quit 0
+}
+
+/// Procedure for ##class(apptools.core.telebot).AddUrl
+ClassMethod AddUrl(Val, Col, Head, Temp, Del = 0) As %String
+{
+	set res=Val
+	if $g(Head) {
+		i $g(Val)=$g(Temp("colomn")) s Temp($g(Temp("colomn")),Col)=""
+	}
+	else {
+		if $D(Temp($g(Temp("colomn")),Col)) {
+			set item=..AddIdItem($g(Temp("method")),Val)
+			set res="<a target=mp_item title='Go to Items panel' href='/iris_mp_item?iditem="_item_"' >"_Val_"</a>"
+		}
+	}
+	quit res
+}
+
+/// Procedure for ##class(apptools.core.telebot).AddIdItem("temp",123)
+ClassMethod AddIdItem(method, id) As %String
+{
+	set gn=$na(@..#GN@(+$h))
+	set gnn=$na(@..#GN@($h-1))
+	if $d(@gnn) KILL @gnn set @gn=+$h
+	if '$d(@gn) set @gn=+$h ;init node new day
+	set item=$i(@gn)
+	set @gn@(item)=$lb(method,id)
+	quit item
 }
 
 /// do ##class(apptools.core.telebot).GetPortalNS(1,"^tmpNSoutpot","Namespaces"," ")
@@ -176,7 +217,9 @@ ClassMethod GetPortalNS(count, gn, SectionHeader = "Namespaces", %Param = "") As
 		if SectionHeader = "Namespaces" set tabs=",Routines ,SysGlobals,SysRoutines,TempGlobals"
 		set %sql="select Name, Globals"_tabs_" from Config.Namespaces where SectionHeader = '"_SectionHeader_"'"
 	}
-	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,,,"""")"
+	set %AppLogInfoTemp("colomn")="Name",%AppLogInfoTemp("method")=SectionHeader
+	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn)
 	quit 0
 }

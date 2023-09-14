@@ -50,6 +50,7 @@ urlpatterns = [
 
     path('iris_mp/', views.iris_mp, name="iris_portal"),
     path('iris_mp_list/', views.iris_mp_list, name="iris_portal_list"),
+    path('iris_mp_item/', views.iris_mp_item, name="iris_portal_item"),
     path('iris_info/', views.iris_info, name="iris_info"),
     path('iris_zts/', views.iris_zts, name="iris_zts"),
     path('iris_alerts/', views.iris_alerts, name="iris_alerts"),
