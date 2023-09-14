@@ -70,8 +70,7 @@ If you want to open Django admin panel which will be located on `http://localhos
 python manage.py runserver
 ```
 
-
-## Installation with ZPM
+## Installation of the server part of the application from ZPM
 
 If the current ZPM instance is not installed, then in one line you can install the latest version of ZPM even with a proxy.
 ```
@@ -104,15 +103,8 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
-## How to Test it
-Open IRIS terminal:
+Open the link in your browser: http://127.0.0.1:8000/
 
-```
-$ docker-compose exec iris iris session iris
-USER>
-USER>zpm
-zpm:USER>install apptools-django
-```
 
 ## Credits
 
