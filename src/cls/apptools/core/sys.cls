@@ -403,14 +403,15 @@ ClassMethod IndGetRows(gn, ByRef FieldsValue, ByRef out) As %Status
 ClassMethod SetTableHeader(gn = "^mtempSQLGN", arg...) As %String
 {
 	set @gn@(-3,"timestamp")=$lb($$$AppDT($h))
+	zw arg
 	if $d(arg(1))>9 {
-		for i=1:1 quit:'$d(arg(1,i),data)  do SetCol(i,data)
+		for i=1:1 quit:'$d(arg(1,i),data)  do SetCol(gn,data,i)
 	}
 	else {
-		for i=1:1 quit:'$d(arg(i),data)  do SetCol(i,data)
+		for i=1:1 quit:'$d(arg(i),data)  do SetCol(gn,data,i)
 	}
 	quit $$$OK
-SetCol(i,data)
+SetCol(gn,data,i)
 	set @gn@(0)=$g(@gn@(0))_$lb(data)
 	set @gn@(-1,$ZStrip(data,"<>WCP"))=i //Name = Number
 	quit
@@ -421,13 +422,13 @@ ClassMethod SetTableRow(gn = "^mtempSQLGN", row, arg...) As %String
 {
 	set @gn@(row)=""
 	if $d(arg(1))>9 {
-		for i=1:1 quit:'$d(arg(1,i),data)  do SetRow(row,i,data)
+		for i=1:1 quit:'$d(arg(1,i),data)  do SetRow(gn,row,data)
 	}
 	else {
-		for i=1:1 quit:'$d(arg(i),data)  do SetRow(row,i,data)
+		for i=1:1 quit:'$d(arg(i),data)  do SetRow(gn,row,data)
 	}
 	quit $$$OK
-SetRow(row,i,data)
+SetRow(gn,row,data)
 	set @gn@(row)=$g(@gn@(row))_$lb(data)
 	quit
 }

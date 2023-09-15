@@ -86,26 +86,36 @@ ClassMethod GetPortal(arg = "", js) As %String
 	set js=..GetResp(arg)
 	try {
 		if 'js.django.authenticated quit 
-		set gn="^||tmpPortal"
+		set gn="^||tmp"
 		set %Param=js.django.arg
 		if %Param["iditem=" {
-			;do ##class(apptools.core.telebot).GetPortalNS(0,gn,"Namespaces"," ")
-			set js.title=" by "_%Param
+			set iditem=$p(%Param,"iditem=",2)
+			set data=##class(apptools.core.telebot).AddIdItem(,,iditem)
+			set method=$lg(data,1),id=$lg(data,2)
+			set js.title=" by "_method_", " _id
 			set js.draw="Form for "_%Param
 			quit
 		}
+		set js.prod={}
+		set js.prod.count=##class(apptools.core.telebot).GetPortalProd(0,gn)
+
 		set js.proc={}
 		set js.proc.count=##class(apptools.core.telebot).GetPortalProc(1,gn)
+
 		set js.lock={}
 		set js.lock.count=##class(apptools.core.telebot).GetPortalLock(1,gn)
+
 		set js.db={}
 		set js.db.count=##class(apptools.core.telebot).GetPortalNS(1,gn,"Databases")
+
 		set js.ns={}
 		set js.ns.count=##class(apptools.core.telebot).GetPortalNS(1,gn,"Namespaces")
+
 		set js.alerts={}
 		do ##class(%SYSTEM.Monitor).GetAlerts(,.str,.last)
 		set st=$o(str(""),-1)
 		set js.alerts.count=+st
+		kill @gn
 		if %Param["Namespaces" {
 			do ##class(apptools.core.telebot).GetPortalNS(0,gn,"Namespaces"," ")
 		}
@@ -114,6 +124,9 @@ ClassMethod GetPortal(arg = "", js) As %String
 		}
 		elseif %Param["Process" {
 			do ##class(apptools.core.telebot).GetPortalProc(0,gn)
+		}
+		elseif %Param["Products" {
+			do ##class(apptools.core.telebot).GetPortalProd(1,gn)
 		}
 		elseif %Param["Locktab" {
 			do ##class(apptools.core.telebot).GetPortalLock(0,gn)
@@ -151,6 +164,49 @@ ClassMethod GetPortalLock(count, gn) As %String
 		quit +$g(counts)
 	}
 	quit 0
+}
+
+/// do ##class(apptools.core.telebot).GetPortalProd(1,"^tmpNSoutpot"," ")
+ClassMethod GetPortalProd(count, gn, %Param = " ") As %String
+{
+	new $namespace
+	set $namespace= "%SYS" 
+	if count=0 {
+		quit ..GetPortalProds(0)
+	}
+	d ..GetPortalProds(1,gn)
+	set %AppLogInfoTemp("colomn")="NameSpace____ProductName",%AppLogInfoTemp("method")="Products"
+	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),%Param,%exec,,"""")"
+	do ##class(apptools.core.sys).Run2Spool(run,gn)
+	quit 0
+}
+
+/// do ##class(apptools.core.telebot).GetPortalProds(1,"^tmpNSoutpot"," ")
+ClassMethod GetPortalProds(count, gn, %Param = " ") As %String
+{
+	new $namespace
+	set listns=##class(apptools.core.sys).ListNS(.inf,"NotPref,Ens")
+		;do ##class(apptools.core.Production).EnsAction("info",,.out)
+		set i="",coun=0
+		do:count ##class(apptools.core.sys).SetTableHeader(gn,"NameSpace____ProductName","Status")
+		for { set i=$o(inf(i)) quit:i=""
+			if $d(inf(i,"Ens")) {
+				set $namespace= i
+				set p=""
+				for { set p=$o(inf(i,"Ens",p)) quit:p=""
+					set coun=coun+1
+					if count {
+						Set sc = ##class(Ens.Director).GetProductionStatus(p,.Stat)
+						s stat=$s(Stat=1:"Running",Stat=2:"Stopped",Stat=3:"Suspended",Stat=4:"Troubled",1:"?")
+						do ##class(apptools.core.sys).SetTableRow(gn,coun,i_"____"_p,stat)
+						
+					}
+				}
+			}
+		}
+		do:count ##class(apptools.core.sys).SetTableFooter(gn)
+	quit coun
 }
 
 /// do ##class(apptools.core.telebot).GetPortalProc(1,"^tmpNSoutpot","Namespaces"," ")
@@ -191,12 +247,13 @@ ClassMethod AddUrl(Val, Col, Head, Temp, Del = 0) As %String
 }
 
 /// Procedure for ##class(apptools.core.telebot).AddIdItem("temp",123)
-ClassMethod AddIdItem(method, id) As %String
+ClassMethod AddIdItem(method = "", id = "", iditem = "") As %String
 {
 	set gn=$na(@..#GN@(+$h))
 	set gnn=$na(@..#GN@($h-1))
 	if $d(@gnn) KILL @gnn set @gn=+$h
 	if '$d(@gn) set @gn=+$h ;init node new day
+	if iditem, $d(@gn@(iditem),data) quit data
 	set item=$i(@gn)
 	set @gn@(item)=$lb(method,id)
 	quit item
