@@ -199,6 +199,7 @@ ClassMethod GetPortalProds(count, gn, %Param = " ") As %String
 					if count {
 						Set sc = ##class(Ens.Director).GetProductionStatus(p,.Stat)
 						s stat=$s(Stat=1:"Running",Stat=2:"Stopped",Stat=3:"Suspended",Stat=4:"Troubled",1:"?")
+						if stat="Running" set stat="<b>"_stat_"</b>"
 						do ##class(apptools.core.sys).SetTableRow(gn,coun,i_"____"_p,stat)
 						
 					}

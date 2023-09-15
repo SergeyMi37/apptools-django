@@ -399,11 +399,10 @@ ClassMethod IndGetRows(gn, ByRef FieldsValue, ByRef out) As %Status
 	quit st
 }
 
-/// do ##class(apptools.core.sys).SetTableHeader("gn","Head1","Head222","Head3333")
+/// do ##class(apptools.core.sys).SetTableHeader("^||gn","Head1","Head222","Head3333")
 ClassMethod SetTableHeader(gn = "^mtempSQLGN", arg...) As %String
 {
 	set @gn@(-3,"timestamp")=$lb($$$AppDT($h))
-	zw arg
 	if $d(arg(1))>9 {
 		for i=1:1 quit:'$d(arg(1,i),data)  do SetCol(gn,data,i)
 	}
@@ -417,7 +416,7 @@ SetCol(gn,data,i)
 	quit
 }
 
-/// for i=1:1:10 do ##class(apptools.core.sys).SetTableRow("gn",i,"row"_i,"row222-"_i,"row3333-"_i)
+/// for i=1:1:10 do ##class(apptools.core.sys).SetTableRow("^||gn",i,"row"_i,"row222-"_i,"row3333-"_i)
 ClassMethod SetTableRow(gn = "^mtempSQLGN", row, arg...) As %String
 {
 	set @gn@(row)=""
@@ -433,7 +432,8 @@ SetRow(gn,row,data)
 	quit
 }
 
-/// do ##class(apptools.core.sys).SetTableFooter("gn")
+/// do ##class(apptools.core.sys).SetTableFooter("^||gn")
+/// set st=##class(apptools.core.LogInfoPane).DrawSQL("result ^||gn")
 ClassMethod SetTableFooter(gn = "^mtempSQLGN") As %String
 {
 	set ts=$lg(@gn@(-3,"timestamp"),1)
