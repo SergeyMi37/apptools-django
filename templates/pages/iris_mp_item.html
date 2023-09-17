@@ -10,17 +10,6 @@
                 <hr>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col">
-                <p>{{iris_portal.version}}, 
-                    <p>Item:<b> {{iris_portal.item}}</b> {{iris_portal.title}}
-                        {% if iris_portal.status != 'ok' %} 
-                            <span style="color:red"> {{iris_portal.status}} </span>
-                        {% endif %}    
-                <hr>
-            </div>
-        </div>
         <div class="row">
         {% autoescape off %}
             {{iris_portal.draw}}

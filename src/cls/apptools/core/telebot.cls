@@ -5,6 +5,90 @@ Class apptools.core.telebot [ Abstract ]
 /// Global Name Store Referens
 Parameter GN = "^%apptools.ref";
 
+/// Get info from telebot
+ClassMethod GetMe(botId) As %DynamicObject
+{
+	s ret=..ExecuteRequest(..GetRequestObj(), "getMe",botId)
+	q ret
+}
+
+/// $wc($zhex("1F6A8"))	;U+0038 U+20E3 =8;  U+0031 U+20E3 =1 ;* U+2744 snow  X - $wc($zhex("274C"))  ;https://apps.timwhitlock.info/emoji/tables/unicode
+/// w ##class(apptools.core.telebot).Send(5111112,"13333333:AHEАWAASDDDpepSSAA","Not recognized !!! Пример кириллицы "_$wc($zhex("1F6A8")))
+ClassMethod Send(chatId As %String, botId, text As %String, obj = 0) As %Integer
+{
+	if (obj'=0) {
+		;set obj = {"remove_keyboard":true}
+		set res = ..SendMessage(chatId,text,botId,obj)
+	} else {
+		set res = ..SendMessage(chatId,text,botId)
+	}
+	
+	if (res.ok) {
+		return res.result."message_id"
+	}
+	return $$$ERROR($$$GeneralError, "Error while sending a message")
+}
+
+ClassMethod GetRequestObj() As %Net.HttpRequest
+{
+	#dim request as %Net.HttpRequest
+	set request = ##class(%Net.HttpRequest).%New()
+	set request.Server = "api.telegram.org"
+	set request.SSLConfiguration = ..CheckSSLCertificate("TelegramSSL")
+	set request.Https = 1 
+	return request
+}
+
+ClassMethod ExecuteRequest(request As %Net.HttpRequest, method As %String, botId = "") As %DynamicObject
+{
+	set st = request.Post("bot"_botId_"/"_method)
+	if ($$$ISERR(st)) {
+		throw ##class(%Exception.StatusException).CreateFromStatus(st)
+	}
+	return ##class(%Library.DynamicObject).%FromJSON(request.HttpResponse.Data)
+}
+
+ClassMethod SendMessage(chatId As %Integer, text As %String, botId, replyMarkup As %DynamicObject = 0) As %DynamicObject
+{
+	#dim request as %Net.HttpRequest
+	set request = ..GetRequestObj()
+	do request.InsertFormData("chat_id",chatId)
+	do request.InsertFormData("text",text)
+	do request.InsertFormData("parse_mode","HTML") ;HTML ;MarkdownV2 ;Markdown https://core.telegram.org/bots/api#markdownv2-style
+	
+	if (replyMarkup'=0) {
+		do request.InsertFormData("reply_markup",replyMarkup.%ToJSON())
+	}
+	return ..ExecuteRequest(request, "sendMessage",botId)
+}
+
+ClassMethod GetUpdates(botId, offset As %Integer = "", limit As %Integer = 100, timeout As %Integer = 0) As %DynamicObject
+{
+	#dim request as %Net.HttpRequest
+	set request = ..GetRequestObj()
+	if (offset'="") {
+		do request.InsertFormData("offset",offset)
+	}
+	do request.InsertFormData("limit",limit)
+	do request.InsertFormData("timeout",timeout)
+	return ..ExecuteRequest(request, "getUpdates",botId)
+}
+
+/// The method checks for the existence of the configured SSL configuration
+/// and creates an empty configuration with that name if this yet
+/// to connect to a https server, that's enough
+ClassMethod CheckSSLCertificate(name) As %String
+{
+  NEW $NAMESPACE
+  SET $NAMESPACE = "%SYS"
+  
+  IF '##class(Security.SSLConfigs).Exists(name) {
+    DO ##class(Security.SSLConfigs).Create(name)
+  }
+  QUIT name
+}
+
+/// --------------Django modules
 /// Get base responce
 ClassMethod GetResp(arg = "") As %String
 {
@@ -90,27 +174,34 @@ ClassMethod GetPortal(arg = "", js) As %String
 		set %Param=js.django.arg
 		if %Param["iditem=" {
 			set iditem=$p(%Param,"iditem=",2)
-			set data=##class(apptools.core.telebot).AddIdItem(,,iditem)
-			set method=$lg(data,1),id=$lg(data,2)
-			set js.title=" by "_method_", " _id
+			set data=##class(apptools.core.telebot).AddIdItem(,iditem)
+			set method=$lg(data,1),id=$lg(data,2),ns=$lg(data,3)
+			set js.title=ns_", "_method_", " _id
 			set js.draw="Form for "_%Param
 			quit
 		}
 		set js.prod={}
 		set js.prod.count=##class(apptools.core.telebot).GetPortalProd(0,gn)
-
 		set js.proc={}
 		set js.proc.count=##class(apptools.core.telebot).GetPortalProc(1,gn)
-
 		set js.lock={}
 		set js.lock.count=##class(apptools.core.telebot).GetPortalLock(1,gn)
-
 		set js.db={}
 		set js.db.count=##class(apptools.core.telebot).GetPortalNS(1,gn,"Databases")
-
 		set js.ns={}
 		set js.ns.count=##class(apptools.core.telebot).GetPortalNS(1,gn,"Namespaces")
-
+		set js.roles={}
+		set js.roles.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Roles"," ")
+		set js.users={}
+		set js.users.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Users"," ")
+		set js.apps={}
+		set js.apps.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Applications"," ")
+		set js.serv={}
+		set js.serv.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Service"," ")
+		set js.res={}
+		set js.res.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Resources"," ")
+		set js.tasks={}
+		set js.tasks.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"%SYS.Task"," ")
 		set js.alerts={}
 		do ##class(%SYSTEM.Monitor).GetAlerts(,.str,.last)
 		set st=$o(str(""),-1)
@@ -131,6 +222,32 @@ ClassMethod GetPortal(arg = "", js) As %String
 		elseif %Param["Locktab" {
 			do ##class(apptools.core.telebot).GetPortalLock(0,gn)
 		}
+		elseif %Param["Apps" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Applications"," ")
+		}
+		elseif %Param["Roles" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Roles"," ")
+		}
+		elseif %Param["Users" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Users"," ")
+		}
+		elseif %Param["Services" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Service"," ")
+		}
+		elseif %Param["Resources" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Resources"," ")
+		}
+		elseif %Param["Tasks" {
+			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"%SYS.Task"," ")
+		}
+		elseif %Param["cpf" {
+			set path=$p($ZU(86),"*")
+			do ##class(apptools.core.telebot).GetPortalFile(path,gn)
+		}
+		elseif %Param["Messages" {
+			set path=##class(apptools.core.files).getPathcconsole()
+			do ##class(apptools.core.telebot).GetPortalFile(path,gn)
+		}
 		elseif %Param["Alerts" {
 			set i=""
 			do ##class(apptools.core.sys).SetTableHeader(gn,"DataTime","PID","Level","Messages")
@@ -148,6 +265,43 @@ ClassMethod GetPortal(arg = "", js) As %String
 		set js.status="error "_$ze
 	}
 	quit ##class(apptools.util.json).ZPretty(js,"","")
+}
+
+/// do ##class(apptools.core.telebot).GetPortalApps(1,"^tmpNSoutpot","Namespaces"," ")
+ClassMethod GetPortalApps(count, gn, mode = "Security.Applications", %Param = "") As %String
+{
+	new $namespace
+	set $namespace= "%SYS" 
+	set:mode="Security.Applications" %sql="select count(*) FROM Security.Applications"
+	set:mode="Security.Users" %sql="select count(*) FROM Security.Users"
+	set:mode="Security.Roles" %sql="select count(*) FROM Security.Roles"
+	set:mode="Security.Service" %sql="select count(*) FROM Security.Services"
+	set:mode="Security.Resources" %sql="select count(*) FROM Security.Resources"
+	set:mode="%SYS.Task" %sql="select count(*) FROM %SYS.Task"
+	if 'count {
+		do ##class(apptools.core.sys).sql2gn(%sql,"",gn)
+		quit +$lg($g(@gn@(1)))
+	}
+	else { 
+		set:mode="Security.Roles" %sql=$replace(%sql,"count(*)","Name,Description,GrantedRoles")
+		set:mode="Security.Users" %sql=$replace(%sql,"count(*)","Name,FullName,Enabled,ExpirationDate")
+		set:mode="Security.Applications" %sql=$replace(%sql,"count(*)","Name,Description,NameSpace,Path,DispatchClass")
+		set:mode="Security.Service" %sql=$replace(%sql,"count(*)","Name,Description,AutheEnabledCapabilities,Capabilities")
+		set:mode="Security.Resources" %sql=$replace(%sql,"count(*)","Name,Description,Type")
+		set:mode="%SYS.Task" %sql=$replace(%sql,"count(*)","ID,Name,Description,DisplayRun,DisplayStartDate,DisplayStarted,DisplayStatus,ER")
+	}
+	set %AppLogInfoTemp("colomn")="Name",%AppLogInfoTemp("method")=mode
+	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,%exec,,"""")"
+	do ##class(apptools.core.sys).Run2Spool(run,gn)
+	quit 0
+}
+
+/// w ##class(apptools.core.telebot).GetPortalFile(p,"^||tmpL")
+ClassMethod GetPortalFile(path, gn) As %String
+{
+ 	
+ quit $$$OK
 }
 
 /// w ##class(apptools.core.telebot).GetPortalLock(1,"^||tmpL")
@@ -175,7 +329,7 @@ ClassMethod GetPortalProd(count, gn, %Param = " ") As %String
 		quit ..GetPortalProds(0)
 	}
 	d ..GetPortalProds(1,gn)
-	set %AppLogInfoTemp("colomn")="NameSpace____ProductName",%AppLogInfoTemp("method")="Products"
+	set %AppLogInfoTemp("colomn")="ProductName",%AppLogInfoTemp("method")="Products"
 	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
 	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),%Param,%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn)
@@ -189,7 +343,7 @@ ClassMethod GetPortalProds(count, gn, %Param = " ") As %String
 	set listns=##class(apptools.core.sys).ListNS(.inf,"NotPref,Ens")
 		;do ##class(apptools.core.Production).EnsAction("info",,.out)
 		set i="",coun=0
-		do:count ##class(apptools.core.sys).SetTableHeader(gn,"NameSpace____ProductName","Status")
+		do:count ##class(apptools.core.sys).SetTableHeader(gn,"NameSpace","ProductName","Status")
 		for { set i=$o(inf(i)) quit:i=""
 			if $d(inf(i,"Ens")) {
 				set $namespace= i
@@ -200,7 +354,7 @@ ClassMethod GetPortalProds(count, gn, %Param = " ") As %String
 						Set sc = ##class(Ens.Director).GetProductionStatus(p,.Stat)
 						s stat=$s(Stat=1:"Running",Stat=2:"Stopped",Stat=3:"Suspended",Stat=4:"Troubled",1:"?")
 						if stat="Running" set stat="<b>"_stat_"</b>"
-						do ##class(apptools.core.sys).SetTableRow(gn,coun,i_"____"_p,stat)
+						do ##class(apptools.core.sys).SetTableRow(gn,coun,i,p,stat)
 						
 					}
 				}
@@ -237,10 +391,12 @@ ClassMethod AddUrl(Val, Col, Head, Temp, Del = 0) As %String
 	set res=Val
 	if $g(Head) {
 		i $g(Val)=$g(Temp("colomn")) s Temp($g(Temp("colomn")),Col)=""
+		i $g(Val)="NameSpace" s Temp("NameSpace",Col)=""
 	}
 	else {
+		if $D(Temp("NameSpace",Col)) set %namespace=Val
 		if $D(Temp($g(Temp("colomn")),Col)) {
-			set item=..AddIdItem($g(Temp("method")),Val)
+			set item=..AddIdItem($lb(Temp("method"),Val,%namespace))
 			set res="<a target=mp_item title='Go to Items panel' href='/iris_mp_item?iditem="_item_"' >"_Val_"</a>"
 		}
 	}
@@ -248,7 +404,7 @@ ClassMethod AddUrl(Val, Col, Head, Temp, Del = 0) As %String
 }
 
 /// Procedure for ##class(apptools.core.telebot).AddIdItem("temp",123)
-ClassMethod AddIdItem(method = "", id = "", iditem = "") As %String
+ClassMethod AddIdItem(lb = "", iditem = "") As %String
 {
 	set gn=$na(@..#GN@(+$h))
 	set gnn=$na(@..#GN@($h-1))
@@ -256,7 +412,7 @@ ClassMethod AddIdItem(method = "", id = "", iditem = "") As %String
 	if '$d(@gn) set @gn=+$h ;init node new day
 	if iditem, $d(@gn@(iditem),data) quit data
 	set item=$i(@gn)
-	set @gn@(item)=$lb(method,id)
+	set @gn@(item)=lb
 	quit item
 }
 
@@ -280,89 +436,6 @@ ClassMethod GetPortalNS(count, gn, SectionHeader = "Namespaces", %Param = "") As
 	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(%sql,10000,$zu(5),%Param,%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn)
 	quit 0
-}
-
-/// Get info from telebot
-ClassMethod GetMe(botId) As %DynamicObject
-{
-	s ret=..ExecuteRequest(..GetRequestObj(), "getMe",botId)
-	q ret
-}
-
-/// $wc($zhex("1F6A8"))	;U+0038 U+20E3 =8;  U+0031 U+20E3 =1 ;* U+2744 snow  X - $wc($zhex("274C"))  ;https://apps.timwhitlock.info/emoji/tables/unicode
-/// w ##class(apptools.core.telebot).Send(5111112,"13333333:AHEАWAASDDDpepSSAA","Not recognized !!! Пример кириллицы "_$wc($zhex("1F6A8")))
-ClassMethod Send(chatId As %String, botId, text As %String, obj = 0) As %Integer
-{
-	if (obj'=0) {
-		;set obj = {"remove_keyboard":true}
-		set res = ..SendMessage(chatId,text,botId,obj)
-	} else {
-		set res = ..SendMessage(chatId,text,botId)
-	}
-	
-	if (res.ok) {
-		return res.result."message_id"
-	}
-	return $$$ERROR($$$GeneralError, "Error while sending a message")
-}
-
-ClassMethod GetRequestObj() As %Net.HttpRequest
-{
-	#dim request as %Net.HttpRequest
-	set request = ##class(%Net.HttpRequest).%New()
-	set request.Server = "api.telegram.org"
-	set request.SSLConfiguration = ..CheckSSLCertificate("TelegramSSL")
-	set request.Https = 1 
-	return request
-}
-
-ClassMethod ExecuteRequest(request As %Net.HttpRequest, method As %String, botId = "") As %DynamicObject
-{
-	set st = request.Post("bot"_botId_"/"_method)
-	if ($$$ISERR(st)) {
-		throw ##class(%Exception.StatusException).CreateFromStatus(st)
-	}
-	return ##class(%Library.DynamicObject).%FromJSON(request.HttpResponse.Data)
-}
-
-ClassMethod SendMessage(chatId As %Integer, text As %String, botId, replyMarkup As %DynamicObject = 0) As %DynamicObject
-{
-	#dim request as %Net.HttpRequest
-	set request = ..GetRequestObj()
-	do request.InsertFormData("chat_id",chatId)
-	do request.InsertFormData("text",text)
-	do request.InsertFormData("parse_mode","HTML") ;HTML ;MarkdownV2 ;Markdown https://core.telegram.org/bots/api#markdownv2-style
-	
-	if (replyMarkup'=0) {
-		do request.InsertFormData("reply_markup",replyMarkup.%ToJSON())
-	}
-	return ..ExecuteRequest(request, "sendMessage",botId)
-}
-
-ClassMethod GetUpdates(botId, offset As %Integer = "", limit As %Integer = 100, timeout As %Integer = 0) As %DynamicObject
-{
-	#dim request as %Net.HttpRequest
-	set request = ..GetRequestObj()
-	if (offset'="") {
-		do request.InsertFormData("offset",offset)
-	}
-	do request.InsertFormData("limit",limit)
-	do request.InsertFormData("timeout",timeout)
-	return ..ExecuteRequest(request, "getUpdates",botId)
-}
-
-/// The method checks for the existence of the configured SSL configuration
-/// and creates an empty configuration with that name if this yet
-/// to connect to a https server, that's enough
-ClassMethod CheckSSLCertificate(name) As %String
-{
-  NEW $NAMESPACE
-  SET $NAMESPACE = "%SYS"
-  
-  IF '##class(Security.SSLConfigs).Exists(name) {
-    DO ##class(Security.SSLConfigs).Create(name)
-  }
-  QUIT name
 }
 
 }

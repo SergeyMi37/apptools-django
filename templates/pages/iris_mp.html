@@ -14,7 +14,8 @@
         <div class="row">
             <div class="col">
                 <p>{{iris_portal.version}}, 
-                <p>Instance:<b> {% iris_piece iris_portal.instance "*" 1 %}</b>, dir: <b>{% iris_piece iris_portal.instance "*" 0 %} </b>
+                <p>Instance:<b> {% iris_piece iris_portal.instance "*" 1 %}</b>, 
+                    dir: <span class="text-muted"> <a href="/iris_mp_list/?mp_context=cpf"> <b>{% iris_piece iris_portal.instance "*" 0 %} </b> </a> </span> 
                 {% if iris_portal.status != 'ok' %} 
                     <span style="color:red"> {{iris_portal.status}} </span>
                 {% endif %}     
@@ -57,13 +58,24 @@
         </div>
         <div class="row">
             <div class="col-sm-4"><h3>{% trans 'Services' %}</h3>
-                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Serv">{% trans 'Quantity' %}: {{ iris_portal.serv.count }} </b> </a> </span> 
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Services">{% trans 'Quantity' %}:<b>  {{ iris_portal.serv.count }} </b> </a> </span> 
             </div>
             <div class="col-sm-4"><h3>{% trans 'Resources' %}</h3>
-                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Resours">{% trans 'Quantity' %}: {{ iris_portal.resours.count }} </b> </a> </span> 
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Resources">{% trans 'Quantity' %}:<b>  {{ iris_portal.res.count }} </b> </a> </span> 
             </div>
             <div class="col-sm-4"><h3>{% trans 'Tasks' %}</h3>
-                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Tasks">{% trans 'Quantity' %}: {{ iris_portal.tasks.count }} </b> </a> </span> 
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Tasks">{% trans 'Quantity' %}:<b>  {{ iris_portal.tasks.count }} </b> </a> </span> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4"><h3>{% trans 'Journals' %}</h3>
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Journals">{% trans 'Quantity' %}:<b>  {{ iris_portal.journ.count }} </b> </a> </span> 
+            </div>
+            <div class="col-sm-4"><h3>{% trans 'Systems params' %}</h3>
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Systems">{% trans 'Quantity' %}:<b>  {{ iris_portal.sys.count }} </b> </a> </span> 
+            </div>
+            <div class="col-sm-4"><h3>{% trans 'Backups' %}</h3>
+                <span class="text-muted"> <a href="/iris_mp_list/?mp_context=Backups">{% trans 'Quantity' %}:<b>  {{ iris_portal.backups.count }} </b> </a> </span> 
             </div>
         </div>
     </div>
