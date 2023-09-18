@@ -40,7 +40,7 @@ def get_text_command_help():
     '''
     bot_info = Bot(TELEGRAM_TOKEN).get_me()
     bot_link = f"https://t.me/{bot_info['username']}"
-    text = f"{bot_link}\n\n /help\n /start - Start django bot 🚀\n /admin Show admin info ℹ️\n /stats - Statistics of bot 📊\n /ask_location Send location 📍\n /broadcast Broadcast message 📨\n /export_users Export users.csv 👥\n /export_iris Export IRIS items .csv\n"
+    text = f"{bot_link}\n\n /help\n /start - Start django bot 🚀\n /admin Show admin info ℹ️\n /stats Statistics of bot 📊\n /ask_location Send location 📍\n /broadcast Broadcast message 📨\n /export_users Export users.csv 👥\n /export_iris Export IRIS items .csv\n"
     return text
 
 

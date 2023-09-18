@@ -32,6 +32,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
     dp.add_handler(CommandHandler("stats", admin_handlers.stats))
     dp.add_handler(CommandHandler('export_users', admin_handlers.export_users))
+    dp.add_handler(CommandHandler('export_iris', admin_handlers.export_iris))
 
     # location
     dp.add_handler(CommandHandler("ask_location", location_handlers.ask_for_location))
