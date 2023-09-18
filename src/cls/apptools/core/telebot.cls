@@ -300,8 +300,9 @@ ClassMethod GetPortalApps(count, gn, mode = "Security.Applications", %Param = ""
 /// w ##class(apptools.core.telebot).GetPortalFile(p,"^||tmpL")
 ClassMethod GetPortalFile(path, gn) As %String
 {
- 	
- quit $$$OK
+	kill @gn
+	if ##class(apptools.core.files).ReadFile(path,.txt) set @gn=$replace(txt,$c(13,10),"<br>")
+ 	quit $$$OK
 }
 
 /// w ##class(apptools.core.telebot).GetPortalLock(1,"^||tmpL")
