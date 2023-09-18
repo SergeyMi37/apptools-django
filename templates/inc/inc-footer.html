@@ -4,6 +4,12 @@
       <a href="/admin/">Admin-Django</a> </span>
       <span class="text-muted"> | <a href="/param_index/">Django-parameters</a> </span>
 
+      {% if bot_link %} 
+      <span class="text-muted"> |  
+        <a target="_blank" href="{{ bot_link }}">TeleBot</a> 
+      </span>
+      {% endif %}   
+
       {% if iris_footer.status != 'ok' %} 
         <span style="color:red"> {{iris_footer.status}} </span>
       {% else %}   

@@ -10,6 +10,10 @@ import dtb.settings
 from tgbot.dispatcher import dispatcher
 from tgbot.main import bot
 
+from telegram import Bot
+bot_info = Bot(dtb.settings.TELEGRAM_TOKEN).get_me()
+bot_link = f"https://t.me/{bot_info['username']}"
+
 from apptools.iris import classMethod, classMethodFooter, classMethodPortal
 from django.utils.translation import ugettext as _
 ###### Param
@@ -35,6 +39,7 @@ def index(request):
 
 def iris_mp(request):
     context = {
+        'bot_link': bot_link,
         'iris_portal': json.loads(classMethodPortal(request)),
         'pagename': _('Management Portal'),
         "iris_footer":json.loads(classMethodFooter(request)),
@@ -48,6 +53,7 @@ def iris_mp_list(request):
     if mp_context: pagename+=" "+ mp_context 
     context = {
         'pagename': pagename,
+        'bot_link': bot_link,
         "iris_portal":json.loads(classMethodPortal(request,mp_context)),
         "iris_footer":json.loads(classMethodFooter(request)),
     }
@@ -60,6 +66,7 @@ def iris_mp_item(request):
     _js = json.loads(classMethodPortal(request,mp_context))
     if mp_context: pagename+= " " + str(_js["title"])
     context = {
+        'bot_link': bot_link,
         'pagename': pagename,
         "iris_portal":_js,
         "iris_footer":json.loads(classMethodFooter(request)),
@@ -114,6 +121,7 @@ def index_page(request):
     _foo=json.loads(classMethodFooter(request))
     context = {
         'pagename': _('Param Demo'),
+        'bot_link': bot_link,
         "errors": errors,
         "iris_footer":_foo,
     }
@@ -131,6 +139,7 @@ def param_index(request):
     _foo=json.loads(classMethodFooter(request))
     context = {
         'pagename': _('Param Demo'),
+        'bot_link': bot_link,
         "errors": errors,
         "iris_footer":_foo,
     }
@@ -149,6 +158,7 @@ def add_param_page(request):
     elif request.method == "GET":
         form = ParamForm()
         context = {
+            'bot_link': bot_link,
             'pagename': _('Adding a new parameter'),
             "iris_footer":json.loads(classMethodFooter(request)),
             'form': form
@@ -162,6 +172,7 @@ def param_detail(request, param_id):
     comments = param.comments.all()
     context = {
        'pagename': _('Options Page'),
+       'bot_link': bot_link,
        "iris_footer":json.loads(classMethodFooter(request)),
         "param": param,
         "comments": comments,
@@ -193,6 +204,7 @@ def params_page(request,my=False):
     count=params.count()
     context = {
         "iris_footer":json.loads(classMethodFooter(request)),
+        'bot_link': bot_link,
         'pagename': pagename,
         'params': params,
         'count':count
@@ -204,6 +216,7 @@ def params_page(request,my=False):
 def params_my(request):
     params = params = Param.objects.filter(user=request.user)
     context = {
+        'bot_link': bot_link,
         'pagename': _('My parameters'),
          "iris_footer":json.loads(classMethodFooter(request)),
         'params': params
@@ -251,6 +264,7 @@ def registration(request):
         else:
             messages.error(request, 'Error updating your profile')
             context = {
+                'bot_link': bot_link,
                 'form': form,
                 "is_registr_form":"err"
             }
@@ -258,6 +272,7 @@ def registration(request):
     elif request.method == "GET":  # Страницу с формой
         form = UserRegistrationForm()
         context = {
+            'bot_link': bot_link,
             'form': form,
             "is_registr_form":"ok"
         }

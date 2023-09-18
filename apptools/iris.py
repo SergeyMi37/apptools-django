@@ -15,6 +15,11 @@ ISC_Username = os.getenv("ISC_Username")
 ISC_Password = os.getenv("ISC_Password")
 ISC_Namespace = os.getenv("ISC_Namespace")
 
+from telegram import Bot
+from dtb.settings import TELEGRAM_TOKEN
+bot_info = Bot(TELEGRAM_TOKEN).get_me()
+bot_link = f"https://t.me/{bot_info['username']}"
+
 def classMethod(request,_class,_method, _arg=""):
     try:
         _args={
@@ -22,6 +27,7 @@ def classMethod(request,_class,_method, _arg=""):
             "irishost":ISC_Host,
             "irisport":str(ISC_Port),
             "arg":_arg,
+            "bot_link":bot_link,
         }
         if request:
             _args["user"]= str(request.user)
@@ -52,7 +58,7 @@ def classMethodFooter(request):
 def classMethodPortal(request,mp_list=""):
     try:
         _val=classMethod(request,"apptools.core.telebot", "GetPortal",mp_list)
-        #if DEBUG:print('---return-classMethod Portal-----',_val)
+        if DEBUG:print('---return-classMethod Portal-----',_val)
     except Exception as err:
         if DEBUG:print("---err-portal--------",err)
         _val = f"{{ 'status':'Error Iris Portal :{err}' }}"

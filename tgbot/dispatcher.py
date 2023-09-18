@@ -26,6 +26,7 @@ def setup_dispatcher(dp):
     """
     # onboarding
     dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
+    dp.add_handler(CommandHandler("help", onboarding_handlers.command_help))
 
     # admin commands
     dp.add_handler(CommandHandler("admin", admin_handlers.admin))
