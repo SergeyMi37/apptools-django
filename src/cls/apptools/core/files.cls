@@ -219,7 +219,7 @@ ClassMethod getPathcconsole(ByRef dir, ByRef logname)
 {
 	s slash=$$$slash
 	Set path=$p($zu(86),"*",1) ;path cpf file * instance name
-	s dir=$p(path,slash,1,$l(path,slash)-1)_slash_"mgr"_slash
+	s dir=$p(path,slash,1,$l(path,slash)-1)_slash_"mgr"_slash ; $zu(12)
 	s logname=$s($zv["IRIS":"messages",1:"cconsole")
  quit dir_logname_".log"
 }

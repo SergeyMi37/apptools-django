@@ -8,7 +8,8 @@ from tgbot.handlers.admin import static_text
 from tgbot.handlers.admin.utils import _get_csv_from_qs_values
 from tgbot.handlers.utils.info import send_typing_action
 from users.models import User
-
+import json
+from apptools.iris import classMethod, classMethodFooter, classMethodPortal
 
 def admin(update: Update, context: CallbackContext) -> None:
     """ Show help info about all secret admins commands """
@@ -49,11 +50,11 @@ def export_users(update: Update, context: CallbackContext) -> None:
     csv_users = _get_csv_from_qs_values(users)
     context.bot.send_document(chat_id=u.user_id, document=csv_users)
 
+#--------------IRIS
 def get_items_iris():
     #todo get list items from IRIS
     text = f" /iris_system\n /iris_users\n /iris_products\n /iris_process\n /iris_tasks\n /iris_messages Messages Log\n"
     return text
-
 
 @send_typing_action
 def export_iris(update: Update, context: CallbackContext) -> None:
@@ -63,3 +64,27 @@ def export_iris(update: Update, context: CallbackContext) -> None:
         return
     text = get_items_iris()
     update.message.reply_text(text=text)
+
+@send_typing_action
+def iris_users(update: Update, context: CallbackContext) -> None:
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        update.message.reply_text(static_text.only_for_admins)
+        return
+    _js = json.loads(classMethodPortal("","Users"))
+    print("=================================",_js)
+    users = _js.get("table","undef")
+    print(type(users), users)
+    csv_users = _get_csv_from_qs_values(users)
+    context.bot.send_document(chat_id=u.user_id, document=csv_users)
+
+@send_typing_action
+def iris_system(update: Update, context: CallbackContext) -> None:
+    u = User.get_user(update, context)
+    if not u.is_admin:
+        update.message.reply_text(static_text.only_for_admins)
+        return
+    # in values argument you can specify which fields should be returned in output csv
+    users = User.objects.all().values()
+    csv_users = _get_csv_from_qs_values(users)
+    context.bot.send_document(chat_id=u.user_id, document=csv_users)

@@ -1057,7 +1057,7 @@ ClassMethod ExportSecurity(dir = "/iris-backup/install/security/") As %Status
 	quit ##class(Security.System).ExportAll(dir_"SecurityExport"_$tr($zd($h,3)_$zt($p($h,",",2),-1),":- ")_".xml", .NumExported)
 }
 
-/// do ##class(apptools.core.sys).Run2Spool("zw ^%apptools.Setting","^gnTmp")
+/// do ##class(apptools.core.sys).Run2Spool("zw ^%apptools.Setting","^||gnTmp")
 ClassMethod Run2Spool(exe, Output gn, oneline = 1, count) As %Status
 {
  OPEN 2:$job USE 2 
