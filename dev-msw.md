@@ -59,6 +59,11 @@ docker-compose build --no-cache --progress=plain
 ```
 docker-compose exec iris iris session iris -U IRISAPP
 ```
+```
+docker logs <container_id>
+docker stop $(docker ps -f name=sys -q) &&  docker rm $(docker ps -f name=sys -q) && docker system prune -f
+```
+
 ## git ------------------------------------------------------------------
 ### commit and push
 ```

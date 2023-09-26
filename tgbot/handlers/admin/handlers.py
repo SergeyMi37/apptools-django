@@ -81,13 +81,20 @@ def iris_i(update: Update, context: CallbackContext) -> None:
     if not u.is_admin:
         update.message.reply_text(static_text.only_for_admins)
         return
-    print("=======",update)
-    print("---",update.message.text)
     #_lst=' '.join(map(str,update.message.text.split(" ")[1::]))
-    _lst=update.message.text.split(" ")[1]
-    #update.message.reply_text(text=_lst)
-    _csv_tab = iris_items(irisitem=_lst)
-    context.bot.send_document(chat_id=u.user_id, document=_csv_tab)
+    try:
+        if update.message:
+            _lst=update.message.text.split(" ")[1]
+        elif update.edited_message:
+            _lst=update.edited_message.text.split(" ")[1]
+        #update.message.reply_text(text=_lst)
+        _csv_tab = iris_items(irisitem=_lst)
+        context.bot.send_document(chat_id=u.user_id, document=_csv_tab)
+    except Exception as err:
+        print("=======",update)
+        print("---",update.message.text)
+        print("---err-iris_i------",err)
+        
 
 
 @send_typing_action
