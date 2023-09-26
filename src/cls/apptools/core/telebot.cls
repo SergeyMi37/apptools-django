@@ -171,9 +171,11 @@ ClassMethod GetPortal(arg = "", js) As %String
 {
 	set js=..GetResp(arg)
 	try {
-		if 'js.django.authenticated quit 
-		set gn="^||tmp",gnTab="^||tmpTab"
+		;if 'js.django.authenticated quit 
+		set gn="^||tmp",
+			gnTab="^||tmpTab"
 		set %Param=js.django.arg
+		
 		if %Param["iditem=" {
 			set iditem=$p(%Param,"iditem=",2)
 			set data=##class(apptools.core.telebot).AddIdItem(,iditem)
@@ -182,44 +184,45 @@ ClassMethod GetPortal(arg = "", js) As %String
 			set js.draw="Form for "_%Param
 			quit
 		}
-		set js.prod={}
-		set js.prod.count=##class(apptools.core.telebot).GetPortalProd(0,gn)
-		set js.proc={}
-		set js.proc.count=##class(apptools.core.telebot).GetPortalProc(0,gn)
-		set js.lock={}
-		set js.lock.count=##class(apptools.core.telebot).GetPortalLock(0,gn)
-		set js.db={}
-		set js.db.count=##class(apptools.core.telebot).GetPortalNS(0,gn,"Databases")
-		set js.ns={}
-		set js.ns.count=##class(apptools.core.telebot).GetPortalNS(0,gn,"Namespaces")
-		set js.roles={}
-		set js.roles.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Roles"," ")
-		set js.users={}
-		set js.users.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Users"," ")
-		set js.apps={}
-		set js.apps.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Applications"," ")
-		set js.serv={}
-		set js.serv.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Service"," ")
-		set js.res={}
-		set js.res.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Resources"," ")
-		set js.tasks={}
-		set js.tasks.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"%SYS.Task"," ")
-		set js.alerts={}
-		do ##class(%SYSTEM.Monitor).GetAlerts(,.str,.last)
-		set st=$o(str(""),-1)
-		set js.alerts.count=+st
-		kill @gn
-		if %Param["Namespaces" {
+		elseif %Param="" {
+			set js.prod={}
+			set js.prod.count=##class(apptools.core.telebot).GetPortalProd(0,gn)
+			set js.proc={}
+			set js.proc.count=##class(apptools.core.telebot).GetPortalProc(0,gn)
+			set js.lock={}
+			set js.lock.count=##class(apptools.core.telebot).GetPortalLock(0,gn)
+			set js.db={}
+			set js.db.count=##class(apptools.core.telebot).GetPortalNS(0,gn,"Databases")
+			set js.ns={}
+			set js.ns.count=##class(apptools.core.telebot).GetPortalNS(0,gn,"Namespaces")
+			set js.roles={}
+			set js.roles.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Roles"," ")
+			set js.users={}
+			set js.users.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Users"," ")
+			set js.apps={}
+			set js.apps.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Applications"," ")
+			set js.serv={}
+			set js.serv.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Service"," ")
+			set js.res={}
+			set js.res.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"Security.Resources"," ")
+			set js.tasks={}
+			set js.tasks.count=##class(apptools.core.telebot).GetPortalApps(0,gn,"%SYS.Task"," ")
+			set js.alerts={}
+			do ##class(%SYSTEM.Monitor).GetAlerts(,.str,.last)
+			set st=$o(str(""),-1)
+			set js.alerts.count=+st
+		}
+		elseif %Param["Namespaces" {
 			do ##class(apptools.core.telebot).GetPortalNS(1,gn,"Namespaces"," ",gnTab)
 		}
 		elseif %Param["Databases" {
 			do ##class(apptools.core.telebot).GetPortalNS(1,gn,"Databases"," ",gnTab)
 		}
 		elseif %Param["Process" {
-			do ##class(apptools.core.telebot).GetPortalProc(1,gn, gnTab)
+			do ##class(apptools.core.telebot).GetPortalProc(1,gn,,,gnTab)
 		}
 		elseif %Param["Products" {
-			do ##class(apptools.core.telebot).GetPortalProd(1,gn, gnTab)
+			do ##class(apptools.core.telebot).GetPortalProd(1,gn,,gnTab)
 		}
 		elseif %Param["Locktab" {
 			do ##class(apptools.core.telebot).GetPortalLock(1,gn, gnTab)
@@ -251,6 +254,7 @@ ClassMethod GetPortal(arg = "", js) As %String
 			do ##class(apptools.core.telebot).GetPortalFile(path,gn, gnTab)
 		}
 		elseif %Param["Alerts" {
+			do ##class(%SYSTEM.Monitor).GetAlerts(,.str,.last)
 			set i=""
 			do ##class(apptools.core.sys).SetTableHeader(gnTab,"DataTime","PID","Level","Messages")
 			for { set i=$o(str(i)) quit:i=""
@@ -260,81 +264,13 @@ ClassMethod GetPortal(arg = "", js) As %String
 			set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gnTab_""",10000,$zu(5),"" "",,,"""")"
 			do ##class(apptools.core.sys).Run2Spool(run,gn)
 		}
-		set out=$g(@gn)
-		set js.draw=$p(out,("</table>"),1)_"</table>"
-		;if $d(@gnTab) do ..Table2Json(js,gnTab)
-		
-	}
-	catch e { 
-		set js.status="error "_$ze
-	}
-	quit ##class(apptools.util.json).ZPretty(js,"","")
-}
-
-/// Get Table for Telebot
-/// set arg="{""arg"":""Users""}"  w ##class(apptools.core.telebot).GetTable(.arg,.js)
-ClassMethod GetTable(arg = "", js) As %String
-{
-	set js=..GetResp(arg)
-	try {
-		if 'js.django.authenticated quit 
-		set gn="",gnTab="^||tmpTab"
-		set %Param=js.django.arg
-		kill @gn
-		if %Param["Namespaces" {
-			do ##class(apptools.core.telebot).GetPortalNS(1,gn,"Namespaces"," ",gnTab)
+		if %Param["-csv" {  //example  
+			do ..Table2Json(js,gnTab)
 		}
-		elseif %Param["Databases" {
-			do ##class(apptools.core.telebot).GetPortalNS(1,gn,"Databases"," ",gnTab)
+		else {
+			set out=$g(@gn)
+			set js.draw=$p(out,("</table>"),1)_"</table>"
 		}
-		elseif %Param["Process" {
-			do ##class(apptools.core.telebot).GetPortalProc(1,gn, gnTab)
-		}
-		elseif %Param["Products" {
-			do ##class(apptools.core.telebot).GetPortalProd(1,gn, gnTab)
-		}
-		elseif %Param["Locktab" {
-			do ##class(apptools.core.telebot).GetPortalLock(1,gn, gnTab)
-		}
-		elseif %Param["Apps" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Applications"," ",gnTab)
-		}
-		elseif %Param["Roles" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Roles"," ",gnTab)
-		}
-		elseif %Param["Users" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Users"," ",gnTab)
-		}
-		elseif %Param["Services" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Service"," ",gnTab)
-		}
-		elseif %Param["Resources" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"Security.Resources"," ",gnTab)
-		}
-		elseif %Param["Tasks" {
-			do ##class(apptools.core.telebot).GetPortalApps(1,gn,"%SYS.Task"," ",gnTab)
-		}
-		elseif %Param["cpf" {
-			set path=$p($ZU(86),"*")
-			do ##class(apptools.core.telebot).GetPortalFile(path,gn, gnTab)
-		}
-		elseif %Param["Messages" {
-			set path=##class(apptools.core.files).getPathcconsole()
-			do ##class(apptools.core.telebot).GetPortalFile(path,gn, gnTab)
-		}
-		elseif %Param["Alerts" {
-			set i=""
-			do ##class(apptools.core.sys).SetTableHeader(gnTab,"DataTime","PID","Level","Messages")
-			for { set i=$o(str(i)) quit:i=""
-				do ##class(apptools.core.sys).SetTableRow(gnTab,i,$p(str(i)," ",1),$p(str(i)," ",2),$p(str(i)," ",3),$p(str(i)," ",4,*))
-			}
-			do ##class(apptools.core.sys).SetTableFooter(gnTab)
-			set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gnTab_""",10000,$zu(5),"" "",,,"""")"
-			do ##class(apptools.core.sys).Run2Spool(run,gn)
-		}
-		w 111111,gnTab
-		do ..Table2Json(js,gnTab)
-		
 	}
 	catch e { 
 		set js.status="error "_$ze
@@ -395,10 +331,10 @@ ClassMethod GetPortalApps(count, gn, mode = "Security.Applications", %Param = ""
 ClassMethod GetPortalFile(path, gn, gnTab) As %String
 {
 	kill @gn
-	if ##class(apptools.core.files).ReadFile(path,.txt) {
-		set txt="<b>"_path_"</b>"_$c(13,10)_txt
-		set @gn=$replace(txt,$c(13,10),"<br>")
-		set size=##class(apptools.core.files).File2Arr(path,gnTab)
+	if ##class(apptools.core.files).ReadFile(path,.txt,0,3000000) {
+		set txt="<b>"_path_"</b>"_$c(10)_txt
+		set @gn=$replace(txt,$c(10),"<br>")
+		;set size=##class(apptools.core.files).File2Arr(path,gnTab)
 	}
  	quit $$$OK
 }
@@ -408,10 +344,10 @@ ClassMethod GetPortalLock(count, gn, gnTab) As %String
 {
 	new $namespace
 	set $namespace= "%SYS" 
-	do ##class(apptools.core.sys).SaveQueryTab("%SYS.LockQuery:List",gn)
+	do ##class(apptools.core.sys).SaveQueryTab("%SYS.LockQuery:List",gnTab)
 	set %AppLogInfoTemp("colomn")="DelKey",%AppLogInfoTemp("method")="Locktab"
 	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
-	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",100000,$zu(5),"" "",%exec,,"""")"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gnTab_""",100000,$zu(5),"" "",%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn,,.counts)
 	if 'count {
 		quit +$g(counts)
@@ -427,10 +363,10 @@ ClassMethod GetPortalProd(count, gn, %Param = " ", gnTab) As %String
 	if count=0 {
 		quit ..GetPortalProds(0)
 	}
-	d ..GetPortalProds(1,gn)
+	d ..GetPortalProds(1,gnTab)
 	set %AppLogInfoTemp("colomn")="ProductName",%AppLogInfoTemp("method")="Products"
 	set %exec="##class(apptools.core.telebot).AddUrl(.%AppLogInfoVal, .%AppLogInfoCol, .%AppLogInfoHead, .%AppLogInfoTemp)"
-	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gn_""",10000,$zu(5),%Param,%exec,,"""")"
+	set run="set st=##class(apptools.core.LogInfoPane).DrawSQL(""r "_gnTab_""",10000,$zu(5),%Param,%exec,,"""")"
 	do ##class(apptools.core.sys).Run2Spool(run,gn)
 	quit 0
 }

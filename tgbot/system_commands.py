@@ -15,6 +15,7 @@ def set_up_commands(bot_instance: Bot) -> None:
             'ask_location': 'Send location 📍',
             'broadcast': 'Broadcast message 📨',
             'export_users': 'Export users.csv 👥',
+            'export_iris': 'Exporting elements IRIS .csv 👉🏻',
         },
         'es': {
             'start': 'Iniciar el bot de django 🚀',
@@ -23,6 +24,7 @@ def set_up_commands(bot_instance: Bot) -> None:
             'ask_location': 'Enviar ubicación 📍',
             'broadcast': 'Mensaje de difusión 📨',
             'export_users': 'Exportar users.csv 👥',
+            'export_iris': 'Exportando elementos IRIS .csv 👉🏻',
         },
         'fr': {
             'start': 'Démarrer le bot Django 🚀',
@@ -31,6 +33,7 @@ def set_up_commands(bot_instance: Bot) -> None:
             'ask_location': 'Envoyer emplacement 📍',
             'broadcast': 'Message de diffusion 📨',
             "export_users": 'Exporter users.csv 👥',
+            'export_iris': 'Exporter des éléments IRIS .csv 👉🏻',
         },
         'ru': {
             'start': 'Запустить django бота 🚀',
@@ -39,6 +42,7 @@ def set_up_commands(bot_instance: Bot) -> None:
             'broadcast': 'Отправить сообщение 📨',
             'ask_location': 'Отправить локацию 📍',
             'export_users': 'Экспорт users.csv 👥',
+            'export_iris': 'Экспорт элементов IRIS .csv 👉🏻',
         }
     }
 

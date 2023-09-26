@@ -35,7 +35,10 @@ def setup_dispatcher(dp):
     # iris
     dp.add_handler(CommandHandler('export_iris', admin_handlers.export_iris))
     dp.add_handler(CommandHandler('iris_users', admin_handlers.iris_users))
-    dp.add_handler(CommandHandler('iris_system', admin_handlers.iris_system))
+    dp.add_handler(CommandHandler('iris_tasks', admin_handlers.iris_tasks))
+    dp.add_handler(CommandHandler('iris_process', admin_handlers.iris_process))
+    dp.add_handler(CommandHandler('iris_products', admin_handlers.iris_products))
+    dp.add_handler(CommandHandler('iris_i', admin_handlers.iris_i))
 
     # location
     dp.add_handler(CommandHandler("ask_location", location_handlers.ask_for_location))

@@ -25,6 +25,6 @@ def _get_csv_from_qs_values(queryset: QuerySet[Dict], filename: str = 'users'):
     buf.seek(0)
 
     # set a filename with file's extension
-    buf.name = f"{filename}__{datetime.now().strftime('%Y.%m.%d.%H.%M')}.csv"
+    buf.name = f"{filename}-{datetime.now().strftime('%Y.%m.%d.%H.%M')}.csv"
 
     return buf
