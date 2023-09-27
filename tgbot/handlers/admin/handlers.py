@@ -5,12 +5,36 @@ from telegram import ParseMode, Update
 from telegram.ext import CallbackContext
 
 from tgbot.handlers.admin import static_text
-from tgbot.handlers.admin.utils import _get_csv_from_qs_values
+from tgbot.handlers.admin.utils import  _get_csv_from_qs_values
 from tgbot.handlers.utils.info import send_typing_action
 from users.models import User
 import json
 from apptools.iris import classMethod, classMethodFooter, classMethodPortal
 from tgbot.system_commands import set_up_commands
+
+def get_text_cmd(update: Update,num=1,last="") -> str:
+    _lst=""
+    try:
+        if update.message:
+            if num=="":
+                _lst=update.message.text    
+            elif last=="":
+                _lst=update.message.text.split(" ")[num] # $p(a," ",2)
+            elif last=="*":
+                _lst=" ".join(update.message.text.split(" ")[num::]) # $p(a," ",2,*)
+        elif update.edited_message:
+            if num=="":
+                _lst=update.edited_message.text    
+            elif last=="":
+                _lst=update.edited_message.text.split(" ")[num]
+            elif last=="*":
+                _lst=" ".join(update.edited_message.text.split(" ")[num::])
+    except Exception as err:
+        pass
+        #print("=======",update)
+        #print("---",update.message.text)
+        #print("---err-iris_i------",err)
+    return _lst
 
 def admin(update: Update, context: CallbackContext) -> None:
     """ Show help info about all secret admins commands """
@@ -81,21 +105,12 @@ def iris_i(update: Update, context: CallbackContext) -> None:
     if not u.is_admin:
         update.message.reply_text(static_text.only_for_admins)
         return
-    #_lst=' '.join(map(str,update.message.text.split(" ")[1::]))
-    try:
-        if update.message:
-            _lst=update.message.text.split(" ")[1]
-        elif update.edited_message:
-            _lst=update.edited_message.text.split(" ")[1]
-        #update.message.reply_text(text=_lst)
+    _lst=get_text_cmd(update,1)
+    if _lst:
         _csv_tab = iris_items(irisitem=_lst)
         context.bot.send_document(chat_id=u.user_id, document=_csv_tab)
-    except Exception as err:
-        print("=======",update)
-        print("---",update.message.text)
-        print("---err-iris_i------",err)
-        
-
+    else:
+            return
 
 @send_typing_action
 def iris_users(update: Update, context: CallbackContext) -> None:

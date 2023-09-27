@@ -11,7 +11,7 @@ from .static_text import broadcast_command, broadcast_wrong_format, broadcast_no
     message_is_sent, declined_message_broadcasting
 from users.models import User
 from users.tasks import broadcast_message
-
+from tgbot.handlers.admin.handlers import get_text_cmd
 
 def broadcast_command_with_message(update: Update, context: CallbackContext):
     """ Type /broadcast <some_text>. Then check your message in HTML format and broadcast to users."""
@@ -22,29 +22,33 @@ def broadcast_command_with_message(update: Update, context: CallbackContext):
             text=broadcast_no_access,
         )
     else:
-        if update.message.text == broadcast_command:
+        #print(update,"---",get_text_cmd(update,0),get_text_cmd(update,0) == broadcast_command,sep = '\n')
+        if get_text_cmd(update,"") == broadcast_command:
             # user typed only command without text for the message.
-            update.message.reply_text(
-                text=broadcast_wrong_format,
-                parse_mode=telegram.ParseMode.HTML,
-            )
+            if update.message:
+                update.message.reply_text(
+                    text=broadcast_wrong_format,
+                    parse_mode=telegram.ParseMode.HTML,  )
+            elif update.edited_message:
+                update.edited_message.reply_text(
+                    text=broadcast_wrong_format,
+                    parse_mode=telegram.ParseMode.HTML,  )
             return
 
-        text = f"{update.message.text.replace(f'{broadcast_command} ', '')}"
+        #text = f"{update.message.text.replace(f'{broadcast_command} ', '')}"
         markup = keyboard_confirm_decline_broadcasting()
 
         try:
-            update.message.reply_text(
-                text=text,
-                parse_mode=telegram.ParseMode.HTML,
-                reply_markup=markup,
-            )
-        except telegram.error.BadRequest as e:
-            update.message.reply_text(
-                text=error_with_html.format(reason=e),
-                parse_mode=telegram.ParseMode.HTML,
-            )
+            if update.message:
+                update.message.reply_text( text=get_text_cmd(update,1,"*"), parse_mode=telegram.ParseMode.HTML, reply_markup=markup,    )
+            elif update.edited_message:
+                update.edited_message.reply_text( text=get_text_cmd(update,1,"*"), parse_mode=telegram.ParseMode.HTML, reply_markup=markup,    )
 
+        except telegram.error.BadRequest as e:
+            if update.message:
+                update.message.reply_text( text=error_with_html.format(reason=e), parse_mode=telegram.ParseMode.HTML, )
+            elif update.edited_message:
+                update.edited_message.reply_text( text=error_with_html.format(reason=e), parse_mode=telegram.ParseMode.HTML, )
 
 def broadcast_decision_handler(update: Update, context: CallbackContext) -> None:
     # callback_data: CONFIRM_DECLINE_BROADCAST variable from manage_data.py
