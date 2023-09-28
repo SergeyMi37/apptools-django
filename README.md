@@ -4,6 +4,9 @@
 [![Docker-ports](https://img.shields.io/badge/dynamic/yaml?color=blue&label=docker-compose&prefix=ports%20-%20&query=%24.services.iris.ports&url=https%3A%2F%2Fraw.githubusercontent.com%2Fsergeymi37%2Fapptools-django%2Fmaster%2Fdocker-compose.yml)](https://raw.githubusercontent.com/sergeymi37/apptools-django/master/docker-compose.yml)
 
 ## apptools-django
+
+Apptools-admin includes support for the Django platform for implementing the functions of the IRIS management portal.
+
 [![OEX](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/apptools-django) 
 [![Demo](https://img.shields.io/badge/Demo%20on-Cloud%20Run%20Deploy-F4A460)](https://apptools-django.demo.community.intersystems.com/apptoolsrest/a/info)
 
@@ -13,7 +16,18 @@
 
 ## What's new
 
-Apptools-admin includes support for the Django platform for implementing the functions of the IRIS management portal.
+Added the ability to receive tables from IRIS in Telegram chat:
+- Namespaces
+- Database
+- LockTab
+- Products
+- Web Application
+- Users
+- Roles
+- Process
+- Services
+- Resources
+- Tasks
 
 ![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-3.png)
 
