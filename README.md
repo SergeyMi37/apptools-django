@@ -5,6 +5,8 @@
 
 ## apptools-django
 
+![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-6.png)
+
 Apptools-admin includes support for the Django platform for implementing the functions of the IRIS management portal.
 
 [![OEX](https://img.shields.io/badge/Available%20on-Intersystems%20Open%20Exchange-00b2a9.svg)](https://openexchange.intersystems.com/package/apptools-django) 
@@ -116,5 +118,3 @@ Open the link in your browser: http://127.0.0.1:8000/
 ## Credits
 
 The project is based on a [template ohld](https://github.com/ohld/django-telegram-bot) and inspired by applications from [Dmitry](https://github.com/caretdev/fastapi-iris-demo) and [Oleksandr](https://openexchange.intersystems.com/package/password-app-iris-db).
-
-![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-6.png)
