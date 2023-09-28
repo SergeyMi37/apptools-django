@@ -33,6 +33,7 @@ django-admin makemessages -l en -i dtb_venv -i src
 django-admin makemessages -a -i dtb_venv -i src # update
 django-admin compilemessages -i dtb_venv -i src
 
+python manage.py collectstatic 
 # 
 pip freeze > requirements.txt
 
