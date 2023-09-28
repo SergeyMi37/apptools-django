@@ -36,7 +36,7 @@ services:
       dockerfile: LocalDockerfile
     container_name: dtb_django
     restart: always
-    command: ["bash","run-django.sh"]
+    command: ["bash","entrypoint.sh"]
     volumes:
       - .:/code
     ports:
