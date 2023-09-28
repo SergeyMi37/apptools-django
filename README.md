@@ -17,19 +17,11 @@ Apptools-admin includes support for the Django platform for implementing the fun
 ## What's new
 
 Added the ability to receive tables from IRIS in Telegram chat:
-- Namespaces
-- Database
-- LockTab
-- Products
-- Web Application
-- Users
-- Roles
-- Process
-- Services
-- Resources
+- Namespaces - Database - LockTab - Products - Web Application - Users
+- Roles - Process - Services - Resources
 - Tasks
 
-![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-3.png)
+![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-10.png)
 
 ## Installation DJANGO
 ```
@@ -119,6 +111,7 @@ $ docker-compose up -d
 
 Open the link in your browser: http://127.0.0.1:8000/
 
+![](https://raw.githubusercontent.com/SergeyMi37/apptools-django/master/doc/Screenshot_dj-3.png)
 
 ## Credits
 
